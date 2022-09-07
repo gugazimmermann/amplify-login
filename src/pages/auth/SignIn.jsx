@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useLocation } from "react-router-dom";
 import { AuthButton, AuthLink, AuthTitle, Input, RememberMe } from "../../components";
 import SignInImage from "../../images/signin.svg";
 
 export default function SignIn() {
-  const { setImg } = useOutletContext();
-  const [email, setEmail] = useState("");
+  const location = useLocation();
+  const { setImg, setAlert, signIn } = useOutletContext();
+  const [email, setEmail] = useState(location?.state?.email || "");
   const [pwd, setPwd] = useState("");
   const [remember, setRemember] = useState(false);
 
   useEffect(() => {
     setImg(SignInImage);
-  }, [setImg]);
+    setAlert(location?.state?.alert)
+  }, [location?.state?.alert, setAlert, setImg]);
 
   const disabled = () => email === "" || pwd === "";
 
@@ -41,9 +43,7 @@ export default function SignIn() {
       <AuthButton
         text="Sign In"
         disabled={disabled()}
-        handler={() => {
-          console.log(email, pwd, remember);
-        }}
+        handler={() => signIn(email, pwd, remember)}
       />
       <div className="w-full text-center mt-6">
         <AuthLink to="/signup" text="Not registered?" size="xl" />

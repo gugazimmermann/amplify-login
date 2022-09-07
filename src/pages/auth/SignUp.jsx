@@ -4,14 +4,15 @@ import { AuthButton, AuthLink, AuthTitle, Input } from "../../components";
 import SignUpImage from "../../images/signup.svg";
 
 export default function SignUp() {
-  const { setImg } = useOutletContext();
+  const { setImg, setAlert, signUp } = useOutletContext();
   const [email, setEmail] = useState("");
   const [pwd, setPwd] = useState("");
   const [repeat, setRepeat] = useState("");
 
   useEffect(() => {
     setImg(SignUpImage);
-  }, [setImg]);
+    setAlert()
+  }, [setAlert, setImg]);
 
   const disabled = () => email === "" || pwd === "" || repeat === "";
 
@@ -45,9 +46,7 @@ export default function SignUp() {
       <AuthButton
         text="Sign Up"
         disabled={disabled()}
-        handler={() => {
-          console.log(email, pwd, repeat);
-        }}
+        handler={() => signUp(email, pwd, repeat)}
       />
       <div className="w-full text-center mt-6">
         <AuthLink text="Back to Sign In" to="/" size="xl" />

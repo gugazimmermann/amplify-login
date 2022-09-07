@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useLocation } from "react-router-dom";
 import { AuthButton, AuthLink, AuthTitle, Input } from "../../components";
 import ConfirmSignUpImage from "../../images/confirm_signup.svg";
 
 export default function ConfirmSignUp() {
-  const { setImg } = useOutletContext();
-  const [email, setEmail] = useState("");
+  const location = useLocation();
+  const { setImg, setAlert, confirmSignUp } = useOutletContext();
+  const [email, setEmail] = useState(location?.state?.email || "");
   const [code, setCode] = useState("");
 
   useEffect(() => {
     setImg(ConfirmSignUpImage);
-  }, [setImg]);
+    setAlert(location?.state?.alert)
+  }, [location?.state?.alert, setAlert, setImg]);
 
   const disabled = () => email === "" || code === "";
 
@@ -31,9 +33,7 @@ export default function ConfirmSignUp() {
       <AuthButton
         text="Confim"
         disabled={disabled()}
-        handler={() => {
-          console.log(email, code);
-        }}
+        handler={() => confirmSignUp(email, code)}
       />
       <div className="w-full text-center mt-6">
         <AuthLink text="Back to Sign In" to="/" size="xl" />

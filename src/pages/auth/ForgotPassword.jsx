@@ -4,12 +4,13 @@ import { AuthButton, AuthLink, AuthTitle, Input } from "../../components";
 import ForgorPasswordImage from "../../images/forgor_password.svg";
 
 export default function ForgorPassword() {
-  const { setImg } = useOutletContext();
+  const { setImg, setAlert, sendForgotPasswordCode } = useOutletContext();
   const [email, setEmail] = useState("");
 
   useEffect(() => {
     setImg(ForgorPasswordImage);
-  }, [setImg]);
+    setAlert()
+  }, [setAlert, setImg]);
 
   const disabled = () => email === "";
 
@@ -27,9 +28,7 @@ export default function ForgorPassword() {
       <AuthButton
         text="Send Code"
         disabled={disabled()}
-        handler={() => {
-          console.log(email);
-        }}
+        handler={() => sendForgotPasswordCode(email)}
       />
       <div className="w-full text-center mt-6">
         <AuthLink text="Back to Sign In" to="/" size="xl" />

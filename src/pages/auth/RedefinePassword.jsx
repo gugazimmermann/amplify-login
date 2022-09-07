@@ -1,18 +1,20 @@
 import { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useLocation } from "react-router-dom";
 import { AuthButton, AuthLink, AuthTitle, Input } from "../../components";
 import RedefinePasswordImage from "../../images/redefine_password.svg";
 
 export default function RedefinePassword() {
-  const { setImg } = useOutletContext();
-  const [email, setEmail] = useState("");
+  const location = useLocation();
+  const { setImg, setAlert, redefinePassword } = useOutletContext();
+  const [email, setEmail] = useState(location?.state?.email || "");
   const [code, setCode] = useState("");
   const [pwd, setPwd] = useState("");
   const [repeat, setRepeat] = useState("");
 
   useEffect(() => {
     setImg(RedefinePasswordImage);
-  }, [setImg]);
+    setAlert(location?.state?.alert)
+  }, [location?.state?.alert, setAlert, setImg]);
 
   const disabled = () => email === "" || pwd === "" || repeat === "";
 
@@ -49,9 +51,7 @@ export default function RedefinePassword() {
       <AuthButton
         text="Redefine Password"
         disabled={disabled()}
-        handler={() => {
-          console.log(email, code, pwd, repeat);
-        }}
+        handler={() => redefinePassword(email, code, pwd, repeat)}
       />
       <div className="w-full text-center mt-6">
         <AuthLink text="Back to Sign In" to="/" size="xl" />
