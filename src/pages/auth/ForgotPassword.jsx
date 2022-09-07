@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
+import { isValidEmail } from "../../helpers";
 import { AuthButton, AuthLink, AuthTitle, Input } from "../../components";
 import ForgorPasswordImage from "../../images/forgor_password.svg";
 
@@ -9,10 +10,10 @@ export default function ForgorPassword() {
 
   useEffect(() => {
     setImg(ForgorPasswordImage);
-    setAlert()
+    setAlert();
   }, [setAlert, setImg]);
 
-  const disabled = () => email === "";
+  const disabled = () => email === "" || !isValidEmail(email);
 
   return (
     <form>

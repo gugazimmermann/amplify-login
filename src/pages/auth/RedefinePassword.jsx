@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useOutletContext, useLocation } from "react-router-dom";
+import { isValidEmail } from "../../helpers";
 import { AuthButton, AuthLink, AuthTitle, Input } from "../../components";
 import RedefinePasswordImage from "../../images/redefine_password.svg";
 
@@ -13,10 +14,17 @@ export default function RedefinePassword() {
 
   useEffect(() => {
     setImg(RedefinePasswordImage);
-    setAlert(location?.state?.alert)
+    setAlert(location?.state?.alert);
   }, [location?.state?.alert, setAlert, setImg]);
 
-  const disabled = () => email === "" || pwd === "" || repeat === "";
+  const disabled = () =>
+    email === "" ||
+    !isValidEmail(email) ||
+    code === "" ||
+    code.length < 4 ||
+    pwd === "" ||
+    repeat === "" ||
+    pwd !== repeat;
 
   return (
     <form>
@@ -38,6 +46,7 @@ export default function RedefinePassword() {
           placeholder="Password"
           value={pwd}
           handler={setPwd}
+          showTooltip
         />
       </div>
       <div className="mb-4">

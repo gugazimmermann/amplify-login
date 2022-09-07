@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
+import { isValidEmail } from "../../helpers";
 import { AuthButton, AuthLink, AuthTitle, Input } from "../../components";
 import SignUpImage from "../../images/signup.svg";
 
@@ -11,10 +12,15 @@ export default function SignUp() {
 
   useEffect(() => {
     setImg(SignUpImage);
-    setAlert()
+    setAlert();
   }, [setAlert, setImg]);
 
-  const disabled = () => email === "" || pwd === "" || repeat === "";
+  const disabled = () =>
+    email === "" ||
+    !isValidEmail(email) ||
+    pwd === "" ||
+    repeat === "" ||
+    pwd !== repeat;
 
   return (
     <form>
@@ -33,6 +39,7 @@ export default function SignUp() {
           placeholder="Password"
           value={pwd}
           handler={setPwd}
+          showTooltip
         />
       </div>
       <div className="mb-4">

@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { useOutletContext, useLocation } from "react-router-dom";
-import { AuthButton, AuthLink, AuthTitle, Input, RememberMe } from "../../components";
+import { isValidEmail } from "../../helpers";
+import {
+  AuthButton,
+  AuthLink,
+  AuthTitle,
+  Input,
+  RememberMe,
+} from "../../components";
 import SignInImage from "../../images/signin.svg";
 
 export default function SignIn() {
@@ -12,10 +19,10 @@ export default function SignIn() {
 
   useEffect(() => {
     setImg(SignInImage);
-    setAlert(location?.state?.alert)
+    setAlert(location?.state?.alert);
   }, [location?.state?.alert, setAlert, setImg]);
 
-  const disabled = () => email === "" || pwd === "";
+  const disabled = () => email === "" || !isValidEmail(email) || pwd === "";
 
   return (
     <form>

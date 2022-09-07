@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useOutletContext, useLocation } from "react-router-dom";
+import { isValidEmail } from "../../helpers";
 import { AuthButton, AuthLink, AuthTitle, Input } from "../../components";
 import ConfirmSignUpImage from "../../images/confirm_signup.svg";
 
@@ -11,10 +12,11 @@ export default function ConfirmSignUp() {
 
   useEffect(() => {
     setImg(ConfirmSignUpImage);
-    setAlert(location?.state?.alert)
+    setAlert(location?.state?.alert);
   }, [location?.state?.alert, setAlert, setImg]);
 
-  const disabled = () => email === "" || code === "";
+  const disabled = () =>
+    email === "" || !isValidEmail(email) || code === "" || code.length < 4;
 
   return (
     <form>
