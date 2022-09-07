@@ -41,6 +41,20 @@ const SignOut = async () => {
   await AmplifyAuth.signOut({ global: true });
 };
 
+const ChangeEmail = async (email) => {
+  const user = await AmplifyAuth.currentAuthenticatedUser();
+  await AmplifyAuth.updateUserAttributes(user, { 'email': email });
+}
+
+const ConfirmChangeEmail = async (code) => {
+  await AmplifyAuth.verifyCurrentUserAttributeSubmit('email', code);
+}
+
+const ChangePassword = async (pwd, newPwd) => {
+  const user = await AmplifyAuth.currentAuthenticatedUser();
+  await AmplifyAuth.changePassword(user, pwd, newPwd);
+}
+
 const Auth = {
   SignUp,
   ResendConfirmationCode,
@@ -50,6 +64,9 @@ const Auth = {
   RedefinePassword,
   GetUser,
   SignOut,
+  ChangeEmail,
+  ConfirmChangeEmail,
+  ChangePassword
 };
 
 export default Auth;
