@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import { AuthButton, AuthLink, Input, RememberMe } from "../../components";
+import { AuthButton, AuthLink, AuthTitle, Input, RememberMe } from "../../components";
 import SignInImage from "../../images/signin.svg";
 
 export default function SignIn() {
@@ -17,7 +17,7 @@ export default function SignIn() {
 
   return (
     <form>
-      <h1 className="text-xl text-center mb-4 uppercase">Sign In</h1>
+      <AuthTitle text="sign in" />
       <div className="mb-4">
         <Input
           type="email"
