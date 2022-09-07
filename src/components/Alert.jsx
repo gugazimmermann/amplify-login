@@ -5,7 +5,7 @@ const Alert = ({ type, text }) => (
       type === "error"
         ? "text-red-600"
         : type === "info"
-        ? "text-sky-600"
+        ? "text-indigo-600"
         : "text-emerald-600"
     }`}
   >
