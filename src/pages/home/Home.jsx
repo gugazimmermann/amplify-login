@@ -1,9 +1,7 @@
+import { useOutletContext } from "react-router-dom";
+
 export default function Home() {
-  return (
-    <section className="h-screen mx-auto bg-white">
-      <div className="container h-full fixed">
-        Home
-      </div>
-    </section>
-  );
+  const { user } = useOutletContext();
+
+  return <main>{user && <pre>{JSON.stringify(user, undefined, 2)}</pre>}</main>;
 }
