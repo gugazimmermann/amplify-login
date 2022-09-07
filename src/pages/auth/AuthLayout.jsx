@@ -126,9 +126,9 @@ export default function AuthLayout() {
   };
 
   return (
-    <section className="h-screen mx-auto bg-white">
+    <main className="h-screen mx-auto bg-white">
       {loading && <Loading />}
-      <div className="container h-full fixed">
+      <section className="container h-full fixed">
         <div className="h-full flex flex-col-reverse md:flex-row items-center justify-evenly">
           <div className="w-10/12 md:w-6/12 lg:w-4/12 md:mb-0">
             {img && <img src={img} alt="SignUp" className="w-full" />}
@@ -149,7 +149,7 @@ export default function AuthLayout() {
             />
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </main>
   );
 }
