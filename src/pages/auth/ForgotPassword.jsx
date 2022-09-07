@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import { AuthButton, AuthLink, Input } from "../../components";
+import { AuthButton, AuthLink, AuthTitle, Input } from "../../components";
 import ForgorPasswordImage from "../../images/forgor_password.svg";
 
 export default function ForgorPassword() {
@@ -15,6 +15,7 @@ export default function ForgorPassword() {
 
   return (
     <form>
+      <AuthTitle text="forgot password" />
       <div className="mb-4">
         <Input
           type="email"
@@ -31,7 +32,7 @@ export default function ForgorPassword() {
         }}
       />
       <div className="w-full text-center mt-6">
-        <AuthLink text="Back to SignIn" to="/" size="xl" />
+        <AuthLink text="Back to Sign In" to="/" size="xl" />
       </div>
     </form>
   );
