@@ -9,6 +9,7 @@ const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"));
 const RedefinePassword = lazy(() => import("./pages/auth/RedefinePassword"));
 const SignUp = lazy(() => import("./pages/auth/SignUp"));
 const ConfirmSignUp = lazy(() => import("./pages/auth/ConfirmSignUp"));
+const Home = lazy(() => import("./pages/home/Home"));
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/confirmsignup" element={<ConfirmSignUp />} />
         </Route>
+        <Route path="/home" element={<Home />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>
