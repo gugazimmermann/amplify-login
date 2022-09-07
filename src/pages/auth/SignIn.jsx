@@ -1,62 +1,54 @@
-import { useEffect } from "react";
-import { useOutletContext, Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useOutletContext } from "react-router-dom";
+import Input from "../../components/Input";
+import RememberMe from "../../components/RememberMe";
+import AuthLink from "../../components/AuthLink";
+import AuthButton from "../../components/AuthButton";
 import SignInImage from "../../images/signin.svg";
 
 export default function SignIn() {
   const { setImg } = useOutletContext();
+  const [email, setEmail] = useState("");
+  const [pwd, setPwd] = useState("");
+  const [remember, setRemember] = useState(false);
 
   useEffect(() => {
     setImg(SignInImage);
   }, [setImg]);
 
+  const disabled = () => email === "" || pwd === "";
+
   return (
     <form>
       <div className="mb-4">
-        <input
+        <Input
           type="email"
-          className="block w-full px-4 py-2 font-normal border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:border-indigo-500 focus:outline-none"
           placeholder="Email"
+          value={email}
+          handler={setEmail}
         />
       </div>
       <div className="mb-4">
-        <input
+        <Input
           type="password"
-          className="block w-full px-4 py-2 font-normal border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:border-indigo-500 focus:outline-none"
           placeholder="Password"
+          value={pwd}
+          handler={setPwd}
         />
       </div>
       <div className="flex justify-between items-center mb-4">
-        <div className="form-group form-check">
-          <input
-            type="checkbox"
-            name="checkbox"
-            id="checkbox"
-            className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-indigo-500 checked:border-indigo-500 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
-          />
-          <label className="form-check-label inline-block" htmlFor="checkbox">
-            Remember Me
-          </label>
-        </div>
-        <Link
-          to="/forgorpassword"
-          className="text-indigo-500 hover:text-amber-500 duration-200 transition ease-in-out"
-        >
-          Forgot Password?
-        </Link>
+        <RememberMe remember={remember} setRemember={setRemember} />
+        <AuthLink to="/forgorpassword" text="Forgot Password?" />
       </div>
-      <button
-        type="button"
-        className="bg-indigo-500 cursor-pointer hover:bg-amber-500 hover:shadow-md focus:bg-amber-500 focus:shadow-md focus:outline-none focus:ring-0 active:bg-amber-500 active:shadow-md inline-block px-2 py-2 text-white font-medium uppercase rounded shadow-md transition duration-150 ease-in-out w-full"
-      >
-        Sign In
-      </button>
+      <AuthButton
+        text="Sign In"
+        disabled={disabled()}
+        handler={() => {
+          console.log(email, pwd, remember);
+        }}
+      />
       <div className="w-full text-center mt-6">
-        <Link
-          to="/signup"
-          className="text-xl text-indigo-500 hover:text-amber-500 duration-200 transition ease-in-out"
-        >
-          Sign Up
-        </Link>
+        <AuthLink to="/signup" text="Sign Up" size="xl" />
       </div>
     </form>
   );
