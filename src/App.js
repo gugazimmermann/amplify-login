@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
-import Loading from "./components/Loading";
+import { Loading } from "./components";
 
 const NotFound = lazy(() => import("./pages/not-found/NotFound"));
 const AuthLayout = lazy(() => import("./pages/auth/AuthLayout"));

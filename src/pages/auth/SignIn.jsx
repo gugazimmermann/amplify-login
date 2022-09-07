@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import Input from "../../components/Input";
-import RememberMe from "../../components/RememberMe";
-import AuthLink from "../../components/AuthLink";
-import AuthButton from "../../components/AuthButton";
+import { AuthButton, AuthLink, Input, RememberMe } from "../../components";
 import SignInImage from "../../images/signin.svg";
 
 export default function SignIn() {
