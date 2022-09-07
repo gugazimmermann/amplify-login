@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useOutletContext, useLocation } from "react-router-dom";
 import { isValidEmail } from "../../helpers";
-import { AuthButton, AuthLink, AuthTitle, Input } from "../../components";
+import { AuthLink, AuthTitle, Button, Input } from "../../components";
 import RedefinePasswordImage from "../../images/redefine_password.svg";
 
 export default function RedefinePassword() {
@@ -57,7 +57,7 @@ export default function RedefinePassword() {
           handler={setRepeat}
         />
       </div>
-      <AuthButton
+      <Button
         text="Redefine Password"
         disabled={disabled()}
         handler={() => redefinePassword(email, code, pwd, repeat)}

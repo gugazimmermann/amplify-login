@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { isValidEmail } from "../../helpers";
-import { AuthButton, AuthLink, AuthTitle, Input } from "../../components";
+import { AuthLink, AuthTitle, Button, Input } from "../../components";
 import ForgorPasswordImage from "../../images/forgor_password.svg";
 
 export default function ForgorPassword() {
@@ -26,7 +26,7 @@ export default function ForgorPassword() {
           handler={setEmail}
         />
       </div>
-      <AuthButton
+      <Button
         text="Send Code"
         disabled={disabled()}
         handler={() => sendForgotPasswordCode(email)}

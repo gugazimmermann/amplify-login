@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useOutletContext, useLocation } from "react-router-dom";
 import { isValidEmail } from "../../helpers";
-import { AuthButton, AuthLink, AuthTitle, Input } from "../../components";
+import { AuthLink, AuthTitle, Button, Input } from "../../components";
 import ConfirmSignUpImage from "../../images/confirm_signup.svg";
 
 export default function ConfirmSignUp() {
@@ -41,7 +41,7 @@ export default function ConfirmSignUp() {
           Resend Confirmation Code
         </button>
       </div>
-      <AuthButton
+      <Button
         text="Confim"
         disabled={disabled()}
         handler={() => confirmSignUp(email, code)}
