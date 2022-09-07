@@ -6,7 +6,8 @@ import ConfirmSignUpImage from "../../images/confirm_signup.svg";
 
 export default function ConfirmSignUp() {
   const location = useLocation();
-  const { setImg, setAlert, confirmSignUp } = useOutletContext();
+  const { setImg, setAlert, resendConfirmationCode, confirmSignUp } =
+    useOutletContext();
   const [email, setEmail] = useState(location?.state?.email || "");
   const [code, setCode] = useState("");
 
@@ -31,6 +32,14 @@ export default function ConfirmSignUp() {
       </div>
       <div className="mb-4">
         <Input type="text" placeholder="Code" value={code} handler={setCode} />
+      </div>
+      <div className="mb-4 flex justify-end text-indigo-500 hover:text-amber-500 duration-200 transition ease-in-out">
+        <button
+          type="button"
+          onClick={() => resendConfirmationCode(email)}
+        >
+          Resend Confirmation Code
+        </button>
       </div>
       <AuthButton
         text="Confim"

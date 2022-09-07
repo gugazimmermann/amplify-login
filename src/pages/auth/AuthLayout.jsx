@@ -71,7 +71,7 @@ export default function AuthLayout() {
   const signUp = async (email, pwd) => {
     startLoading();
     try {
-      await Auth.SignUp(email, pwd, 'en-US');
+      await Auth.SignUp(email, pwd, "en-US");
       stopLoading();
       navigate("/confirmsignup", {
         state: { email, alert: { type: "info", text: "Check your Email" } },
@@ -90,7 +90,12 @@ export default function AuthLayout() {
     try {
       await Auth.ResendConfirmationCode(email);
       stopLoading();
-      navigate("/confirmsignup", { state: { email, resent: true } });
+      navigate("/confirmsignup", {
+        state: {
+          email,
+          alert: { type: "success", text: "Code Resent, Check your Email" },
+        },
+      });
     } catch (err) {
       stopLoading();
       setAlert({
