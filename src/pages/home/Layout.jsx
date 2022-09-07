@@ -11,8 +11,13 @@ export default function Layout() {
   const loadUser = async (force) => {
     if (!user || force === true) {
       setLoading(true);
-      setUser(await Auth.GetUser());
-      setLoading(false);
+      try {
+        const attributes = await Auth.GetUser();
+        setUser(attributes)
+        setLoading(false);
+      } catch (error) {
+        navigate('/')
+      }
     }
   };
   

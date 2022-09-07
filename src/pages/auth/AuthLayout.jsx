@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import Auth from "../../api/auth";
 import { Alert, Loading } from "../../components";
@@ -124,6 +124,21 @@ export default function AuthLayout() {
       });
     }
   };
+
+  const loadUser = async () => {
+    setLoading(true);
+    try {
+      await Auth.GetUser();
+      setLoading(false);
+      navigate('/home')
+    } catch (error) {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadUser();
+  }, []);
 
   return (
     <main className="h-screen mx-auto bg-white">
