@@ -2,10 +2,10 @@
 
 A simple tutorial showing how to create a login flow using React / Tailwind / AWS Amplify (Cognito, GraghQL, DynamoDB).
 
-# FavIcon
+## FavIcon
 
-<a href="https://www.flaticon.com/free-icons/code" title="code icons">Code icons created by Freepik - Flaticon</a>
+Code icons created by Freepik - Flaticon - [https://www.flaticon.com/free-icons/code](https://www.flaticon.com/free-icons/code)
 
-# Images
+## Images
 
-https://undraw.co/
+unDraw - [https://undraw.co/](https://undraw.co/)
