@@ -1,3 +1,4 @@
+export { default as Alert } from "./Alert";
 export { default as AuthButton } from "./AuthButton";
 export { default as AuthLink } from "./AuthLink";
 export { default as AuthTitle } from "./AuthTitle";
