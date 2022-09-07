@@ -21,7 +21,7 @@ export default function RedefinePassword() {
     email === "" ||
     !isValidEmail(email) ||
     code === "" ||
-    code.length < 4 ||
+    code.length < 6 ||
     pwd === "" ||
     repeat === "" ||
     pwd !== repeat;

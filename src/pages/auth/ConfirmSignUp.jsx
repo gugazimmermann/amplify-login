@@ -16,7 +16,7 @@ export default function ConfirmSignUp() {
   }, [location?.state?.alert, setAlert, setImg]);
 
   const disabled = () =>
-    email === "" || !isValidEmail(email) || code === "" || code.length < 4;
+    email === "" || !isValidEmail(email) || code === "" || code.length < 6;
 
   return (
     <form>
