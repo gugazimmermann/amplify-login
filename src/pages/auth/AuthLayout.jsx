@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+import Auth from "../../api/auth";
 import { Alert, Loading } from "../../components";
 
 export default function AuthLayout() {
@@ -20,40 +21,103 @@ export default function AuthLayout() {
 
   const signIn = async (email, pwd, remember) => {
     startLoading();
-    stopLoading();
-    navigate("/home");
+    try {
+      await Auth.SignIn(email, pwd, remember);
+      stopLoading();
+      navigate("/home");
+    } catch (err) {
+      stopLoading();
+      setAlert({ type: "error", text: "Sorry, Unable to login" });
+    }
   };
 
   const sendForgotPasswordCode = async (email) => {
     startLoading();
-    stopLoading();
-    navigate("/redefinepassword", {
-      state: { email, alert: { type: "info", text: "Check your Email" } },
-    });
+    try {
+      await Auth.ForgotPassword(email);
+      stopLoading();
+      navigate("/redefinepassword", {
+        state: { email, alert: { type: "info", text: "Check your Email" } },
+      });
+    } catch (err) {
+      stopLoading();
+      setAlert({
+        type: "error",
+        text: "Unable to send code, email is correct?",
+      });
+    }
   };
 
-  const redefinePassword = async (email, code, pwd, repeat) => {
+  const redefinePassword = async (email, code, pwd) => {
     startLoading();
-    stopLoading();
-    navigate("/", { state: { email, alert: { type: "success", text: "Password changed successfully!" } } });
+    try {
+      await Auth.RedefinePassword(email, code, pwd);
+      stopLoading();
+      navigate("/", {
+        state: {
+          email,
+          alert: { type: "success", text: "Password changed successfully!" },
+        },
+      });
+    } catch (err) {
+      stopLoading();
+      setAlert({
+        type: "error",
+        text: "Unable to redifine password, email, code or new password are wrong!",
+      });
+    }
   };
 
-  const signUp = async (email, pwd, repeat) => {
+  const signUp = async (email, pwd) => {
     startLoading();
-    stopLoading();
-    navigate("/confirmsignup", { state: { email, alert: { type: "info", text: "Check your Email" } } });
+    try {
+      await Auth.SignUp(email, pwd, 'en-US');
+      stopLoading();
+      navigate("/confirmsignup", {
+        state: { email, alert: { type: "info", text: "Check your Email" } },
+      });
+    } catch (err) {
+      stopLoading();
+      setAlert({
+        type: "error",
+        text: "Unable to Register, email, code or new password are wrong!",
+      });
+    }
   };
 
   const resendConfirmationCode = async (email) => {
     startLoading();
-    stopLoading();
-    navigate("/confirmsignup", { state: { email, resent: true } });
+    try {
+      await Auth.ResendConfirmationCode(email);
+      stopLoading();
+      navigate("/confirmsignup", { state: { email, resent: true } });
+    } catch (err) {
+      stopLoading();
+      setAlert({
+        type: "error",
+        text: "Unable to send code, email is correct?",
+      });
+    }
   };
 
   const confirmSignUp = async (email, code) => {
     startLoading();
-    stopLoading();
-    navigate("/", { state: { email, alert: { type: "success", text: "Confirmation successful!" } } });
+    try {
+      await Auth.ConfirmSignUp(email, code);
+      stopLoading();
+      navigate("/", {
+        state: {
+          email,
+          alert: { type: "success", text: "Confirmation successful!" },
+        },
+      });
+    } catch (err) {
+      stopLoading();
+      setAlert({
+        type: "error",
+        text: "Unable to confirm registration, email or code are wrong!",
+      });
+    }
   };
 
   return (
