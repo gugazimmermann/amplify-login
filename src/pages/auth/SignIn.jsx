@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { useOutletContext, useLocation } from "react-router-dom";
 import { isValidEmail } from "../../helpers";
 import {
-  AuthButton,
   AuthLink,
   AuthTitle,
+  Button,
   Input,
   RememberMe,
 } from "../../components";
@@ -47,7 +47,7 @@ export default function SignIn() {
         <RememberMe remember={remember} setRemember={setRemember} />
         <AuthLink to="/forgorpassword" text="Forgot Password?" />
       </div>
-      <AuthButton
+      <Button
         text="Sign In"
         disabled={disabled()}
         handler={() => signIn(email, pwd, remember)}

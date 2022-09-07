@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { isValidEmail } from "../../helpers";
-import { AuthButton, AuthLink, AuthTitle, Input } from "../../components";
+import { AuthLink, AuthTitle, Button, Input } from "../../components";
 import SignUpImage from "../../images/signup.svg";
 
 export default function SignUp() {
@@ -50,7 +50,7 @@ export default function SignUp() {
           handler={setRepeat}
         />
       </div>
-      <AuthButton
+      <Button
         text="Sign Up"
         disabled={disabled()}
         handler={() => signUp(email, pwd, repeat)}
