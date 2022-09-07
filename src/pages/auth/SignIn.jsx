@@ -17,6 +17,7 @@ export default function SignIn() {
 
   return (
     <form>
+      <h1 className="text-xl text-center mb-4 uppercase">Sign In</h1>
       <div className="mb-4">
         <Input
           type="email"
@@ -45,7 +46,7 @@ export default function SignIn() {
         }}
       />
       <div className="w-full text-center mt-6">
-        <AuthLink to="/signup" text="Sign Up" size="xl" />
+        <AuthLink to="/signup" text="Not registered?" size="xl" />
       </div>
     </form>
   );
