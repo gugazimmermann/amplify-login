@@ -1,13 +1,13 @@
 import { useEffect, useState, useContext } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { AppContext } from "../../context";
-import { LANGUAGES, ROUTES } from "../../constants";
+import { LANGUAGES, ROUTES, TYPES } from "../../constants";
 import Auth from "../../api/auth";
 import { Alert, Flags, Loading } from "../../components";
 
 export default function AuthLayout() {
   const navigate = useNavigate();
-  const { state } = useContext(AppContext);
+  const { state, dispatch } = useContext(AppContext);
   const [img, setImg] = useState();
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState();
@@ -25,9 +25,10 @@ export default function AuthLayout() {
   const signIn = async (email, pwd, remember) => {
     startLoading();
     try {
-      await Auth.SignIn(email, pwd, remember);
+      const { attributes } = await Auth.SignIn(email, pwd, remember);
+      dispatch({ type: TYPES.UPDATE_LANG, payload: attributes.locale });
       stopLoading();
-      navigate(ROUTES[state.lang].HOME);
+      navigate(ROUTES[attributes.locale].HOME);
     } catch (err) {
       stopLoading();
       setAlert({
@@ -86,7 +87,7 @@ export default function AuthLayout() {
   const signUp = async (email, pwd) => {
     startLoading();
     try {
-      await Auth.SignUp(email, pwd, "en-US");
+      await Auth.SignUp(email, pwd, state.lang);
       stopLoading();
       navigate(ROUTES[state.lang].CONFIRM_SIGN_UP, {
         state: {
