@@ -1566,7 +1566,7 @@ export default function AuthLayout() {
       stopLoading();
       setAlert({
         type: "error",
-        text: "Unable to redifine password, email, code or new password are wrong!",
+        text: "Unable to redefine password, email, code or new password are wrong!",
       });
     }
   };
