@@ -1,9 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+import { AppContext } from "../../context";
+import { ROUTES, TYPES } from "../../constants";
 import Auth from "../../api/auth";
 import { Loading, Nav } from "../../components";
 
 export default function Layout() {
+  const { state, dispatch } = useContext(AppContext);
   const navigate = useNavigate();
   const [user, setUser] = useState();
   const [loading, setLoading] = useState(false);
@@ -13,18 +16,19 @@ export default function Layout() {
       setLoading(true);
       try {
         const attributes = await Auth.GetUser();
-        setUser(attributes)
+        setUser(attributes);
+        dispatch({ type: TYPES.UPDATE_LANG, payload: attributes.locale });
         setLoading(false);
       } catch (error) {
-        navigate('/')
+        navigate(ROUTES[state.lang].SIGN_IN);
       }
     }
   };
-  
+
   const handleSignOut = async () => {
     await Auth.SignOut();
-    navigate('/');
-  }
+    navigate(ROUTES[state.lang].SIGN_IN);
+  };
 
   useEffect(() => {
     loadUser();
@@ -35,7 +39,7 @@ export default function Layout() {
       {loading && <Loading />}
       <Nav handleSignOut={handleSignOut} />
       <div className="mx-auto max-w-screen-lg p-4">
-        <Outlet context={{ user, loadUser , setLoading}} />
+        <Outlet context={{ user, loadUser, setLoading }} />
       </div>
     </main>
   );
