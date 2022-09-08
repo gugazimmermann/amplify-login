@@ -34,10 +34,12 @@ export default function Layout() {
     loadUser();
   }, []);
 
+  if (!user) return <Loading />
+
   return (
     <main className="mx-auto h-screen">
       {loading && <Loading />}
-      <Nav handleSignOut={handleSignOut} />
+      <Nav user={user} handleSignOut={handleSignOut} />
       <div className="mx-auto max-w-screen-lg p-4">
         <Outlet context={{ user, loadUser, setLoading }} />
       </div>
