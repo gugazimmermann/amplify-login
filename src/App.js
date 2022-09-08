@@ -1,5 +1,7 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useContext } from "react";
 import { Routes, Route } from "react-router-dom";
+import { AppContext } from "./context";
+import { ROUTES } from "./constants";
 import { Loading } from "./components";
 
 const NotFound = lazy(() => import("./pages/not-found/NotFound"));
@@ -15,19 +17,30 @@ const Home = lazy(() => import("./pages/home/Home"));
 const Profile = lazy(() => import("./pages/home/Profile"));
 
 function App() {
+  const { state } = useContext(AppContext);
+
   return (
     <Suspense fallback={<Loading />}>
       <Routes>
         <Route element={<AuthLayout />}>
-          <Route path="/" element={<SignIn />} />
-          <Route path="/forgorpassword" element={<ForgotPassword />} />
-          <Route path="/redefinepassword" element={<RedefinePassword />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/confirmsignup" element={<ConfirmSignUp />} />
+          <Route path={ROUTES[state.lang].SIGN_IN} element={<SignIn />} />
+          <Route
+            path={ROUTES[state.lang].FORGOT_PASSWORD}
+            element={<ForgotPassword />}
+          />
+          <Route
+            path={ROUTES[state.lang].REDEFINE_PASSWORD}
+            element={<RedefinePassword />}
+          />
+          <Route path={ROUTES[state.lang].SIGN_UP} element={<SignUp />} />
+          <Route
+            path={ROUTES[state.lang].CONFIRM_SIGN_UP}
+            element={<ConfirmSignUp />}
+          />
         </Route>
         <Route element={<Layout />}>
-          <Route path="/home" element={<Home />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path={ROUTES[state.lang].HOME} element={<Home />} />
+          <Route path={ROUTES[state.lang].PROFILE} element={<Profile />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

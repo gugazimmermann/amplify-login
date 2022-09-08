@@ -1,11 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useOutletContext, useLocation } from "react-router-dom";
+import { AppContext } from "../../context";
+import { LANGUAGES, ROUTES } from "../../constants";
 import { isValidEmail } from "../../helpers";
 import { AuthLink, AuthTitle, Button, Input } from "../../components";
 import ConfirmSignUpImage from "../../images/confirm_signup.svg";
 
 export default function ConfirmSignUp() {
   const location = useLocation();
+  const { state } = useContext(AppContext);
   const { setImg, setAlert, resendConfirmationCode, confirmSignUp } =
     useOutletContext();
   const [email, setEmail] = useState(location?.state?.email || "");
@@ -21,33 +24,39 @@ export default function ConfirmSignUp() {
 
   return (
     <form>
-      <AuthTitle text="confirm registration" />
+      <AuthTitle text={LANGUAGES[state.lang].Auth.ConfirmRegistrationTitle} />
       <div className="mb-4">
         <Input
           type="email"
-          placeholder="Email"
+          placeholder={LANGUAGES[state.lang].Email}
           value={email}
           handler={setEmail}
         />
       </div>
       <div className="mb-4">
-        <Input type="text" placeholder="Code" value={code} handler={setCode} />
+        <Input
+          type="text"
+          placeholder={LANGUAGES[state.lang].Code}
+          value={code}
+          handler={setCode}
+        />
       </div>
       <div className="mb-4 flex justify-end text-indigo-500 hover:text-amber-500 duration-200 transition ease-in-out">
-        <button
-          type="button"
-          onClick={() => resendConfirmationCode(email)}
-        >
-          Resend Confirmation Code
+        <button type="button" onClick={() => resendConfirmationCode(email)}>
+          {LANGUAGES[state.lang].Auth.ResendConfirmationCode}
         </button>
       </div>
       <Button
-        text="Confim"
+        text={LANGUAGES[state.lang].Auth.ConfirmRegistrationButton}
         disabled={disabled()}
         handler={() => confirmSignUp(email, code)}
       />
       <div className="w-full text-center mt-6">
-        <AuthLink text="Back to Sign In" to="/" size="xl" />
+        <AuthLink
+          text={LANGUAGES[state.lang].Auth.BackToSignIn}
+          to={ROUTES[state.lang].SIGN_IN}
+          size="xl"
+        />
       </div>
     </form>
   );

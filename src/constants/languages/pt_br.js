@@ -1,0 +1,66 @@
+const pt_br_lang = {
+  Loading: "Carregando",
+  Email: "Email",
+  Password: "Senha",
+  Code: "Código",
+  PasswordRules: {
+    Chars: "Pelo menos 8 caracteres",
+    Lowercase: "Requer Minúsculas",
+    Uppercase: "Requer Maiúsculas",
+    Number: "Requer Número",
+    Symbol: "Requer Símbolo",
+  },
+  NotFound: {
+    Sorry: "Desculpe",
+    PageNotFound: "Página Não Encontrada",
+  },
+  CommonError: {
+    Login: "Desculpe, Não foi possível entrar",
+    SendCode: "Não foi possível enviar o código, o email está correto?",
+    RedefinePassword:
+      "Não foi possível redefinir a senha, e-mail, código ou nova senha estão errados!",
+    SignUp:
+      "Não foi possível registrar. O e-mail já existe ou a senha está errada!",
+    ConfirmSignUp:
+      "Não foi possível confirmar o registro, e-mail ou código estão errados!",
+    CodeError: "Código de verificação inválido. Tente novamente.",
+    EmailError: "Já existe uma conta com este e-mail.",
+  },
+  Auth: {
+    SignInTitle: "Entrar",
+    RememberMe: "Manter Conectado",
+    ForgotPassword: "Esqueceu a Senha?",
+    ForgotPasswordSuccess: "Verifique seu Email",
+    SignInButton: "Entrar",
+    NotRegistered: "Não tem Registro?",
+    ForgotPasswordTitle: "Esqueceu a Senha?",
+    SendCode: "Enviar Código",
+    BackToSignIn: "Votlar para Entrar",
+    RedefinePasswordTitle: "Redefinir Senha",
+    RepeatPassword: "Repita a Senha",
+    RedefinePasswordSuccess: "Senha Alterada com Sucesso!",
+    RedefinePasswordButton: "Redefinir Senha",
+    SignUpTitle: "Registro",
+    SignUpSuccess: "Verifique seu Email",
+    SignUpButton: "Registrar",
+    ConfirmRegistrationTitle: "Confirmar Registro",
+    ResendConfirmationCode: "Re-enviar Código de Confirmação",
+    ResendConfirmationSuccess: "Código enviado, verifique seu email",
+    ConfirmRegistrationSuccess: "Confirmação realizada com sucesso!",
+    ConfirmRegistrationButton: "Confirmar",
+  },
+  Profile: {
+    Profile: "Profile",
+    SignOut: "Sign Out",
+    ChangeEmail: "Change Email",
+    CurrentPassword: "Current Password",
+    NewPassword: "New Password",
+    RepeatNewPassword: "Repeat New Password",
+    ChangePassword: "Change Password",
+    CodeAlert: "Please, check your email and send the code.",
+    EmailSuccess: "Email changed successfully!",
+    PasswordSuccess: "Password changed successfully!",
+  },
+};
+
+export default pt_br_lang;

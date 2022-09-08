@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useOutletContext, useLocation } from "react-router-dom";
+import { AppContext } from "../../context";
+import { LANGUAGES, ROUTES } from "../../constants";
 import { isValidEmail } from "../../helpers";
 import {
   AuthLink,
@@ -12,6 +14,7 @@ import SignInImage from "../../images/signin.svg";
 
 export default function SignIn() {
   const location = useLocation();
+  const { state } = useContext(AppContext);
   const { setImg, setAlert, signIn } = useOutletContext();
   const [email, setEmail] = useState(location?.state?.email || "");
   const [pwd, setPwd] = useState("");
@@ -26,11 +29,11 @@ export default function SignIn() {
 
   return (
     <form>
-      <AuthTitle text="sign in" />
+      <AuthTitle text={LANGUAGES[state.lang].Auth.SignInTitle} />
       <div className="mb-4">
         <Input
           type="email"
-          placeholder="Email"
+          placeholder={LANGUAGES[state.lang].Email}
           value={email}
           handler={setEmail}
         />
@@ -38,22 +41,29 @@ export default function SignIn() {
       <div className="mb-4">
         <Input
           type="password"
-          placeholder="Password"
+          placeholder={LANGUAGES[state.lang].Password}
           value={pwd}
           handler={setPwd}
         />
       </div>
       <div className="flex justify-between items-center mb-4">
         <RememberMe remember={remember} setRemember={setRemember} />
-        <AuthLink to="/forgorpassword" text="Forgot Password?" />
+        <AuthLink
+          to={ROUTES[state.lang].FORGOT_PASSWORD}
+          text={LANGUAGES[state.lang].Auth.ForgotPassword}
+        />
       </div>
       <Button
-        text="Sign In"
+        text={LANGUAGES[state.lang].Auth.SignInButton}
         disabled={disabled()}
         handler={() => signIn(email, pwd, remember)}
       />
       <div className="w-full text-center mt-6">
-        <AuthLink to="/signup" text="Not registered?" size="xl" />
+        <AuthLink
+          to={ROUTES[state.lang].SIGN_UP}
+          text={LANGUAGES[state.lang].Auth.NotRegistered}
+          size="xl"
+        />
       </div>
     </form>
   );

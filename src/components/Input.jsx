@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { AppContext } from "../context";
+import { LANGUAGES } from "../constants";
 
 const Input = ({ type, placeholder, value, handler, showTooltip }) => {
+  const { state } = useContext(AppContext);
   const [inputType, setInputType] = useState(type);
   const [tooltip, setTooltip] = useState(false);
 
@@ -46,11 +49,11 @@ const Input = ({ type, placeholder, value, handler, showTooltip }) => {
               tooltip ? "flex" : "hidden"
             } flex-col text-left absolute -right-8 top-2 -translate-y-full w-48 px-2 py-1 bg-gray-700 rounded-lg text-white text-sm`}
           >
-            <li>Must have at least 8 chars</li>
-            <li>Requires Lowercase</li>
-            <li>Requires Uppercase</li>
-            <li>Requires Number</li>
-            <li>Requires Symbol</li>
+            <li>{LANGUAGES[state.lang].PasswordRules.Chars}</li>
+            <li>{LANGUAGES[state.lang].PasswordRules.Lowercase}</li>
+            <li>{LANGUAGES[state.lang].PasswordRules.Uppercase}</li>
+            <li>{LANGUAGES[state.lang].PasswordRules.Number}</li>
+            <li>{LANGUAGES[state.lang].PasswordRules.Symbol}</li>
           </ul>
         </>
       )}
