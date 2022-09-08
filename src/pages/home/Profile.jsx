@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
+import { LANGUAGES, ROUTES } from "../../constants";
 import Auth from "../../api/auth";
-import { Alert, Button, Form, Input, Title } from "../../components";
+import { Alert, Button, Form, Input, Select, Title } from "../../components";
 import { isValidEmail } from "../../helpers";
 
 export default function Profile() {
+  const navigate = useNavigate();
   const { user, loadUser, setLoading } = useOutletContext();
   const [alert, setAlert] = useState();
   const [showCode, setShowCode] = useState(false);
@@ -13,15 +15,40 @@ export default function Profile() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
+  const [language, setLanguage] = useState(user.locale);
 
   useEffect(() => {
     user && setEmail(user?.email);
   }, [user]);
 
   const loading = () => {
-    setAlert()
+    setAlert();
     setLoading(true);
-  }
+  };
+
+  const handleErrors = (message) => {
+    let errorMessage = message;
+    switch (message) {
+      case "Attempt limit exceeded, please try after some time.":
+        errorMessage = LANGUAGES[user.locale].CommonError.AttemptLimit;
+        break;
+      case "An account with the given email already exists.":
+        errorMessage = LANGUAGES[user.locale].CommonError.Email;
+        break;
+      case "Invalid verification code provided, please try again.":
+        errorMessage = LANGUAGES[user.locale].CommonError.CodeError;
+        break;
+      case "Incorrect username or password.":
+        errorMessage = LANGUAGES[user.locale].CommonError.Password;
+        break;
+      case "Password did not conform with policy: Password must have symbol characters":
+        errorMessage = LANGUAGES[user.locale].CommonError.NewPassword;
+        break;
+      default:
+        errorMessage = message;
+    }
+    setAlert({ type: "error", text: errorMessage });
+  };
 
   const handleChangeEmail = async () => {
     loading();
@@ -29,7 +56,7 @@ export default function Profile() {
       await Auth.ChangeEmail(email);
       setShowCode(true);
     } catch (error) {
-      setAlert({ type: "error", text: error.message });
+      handleErrors(error.message);
     }
     setLoading(false);
   };
@@ -40,9 +67,12 @@ export default function Profile() {
       await Auth.ConfirmChangeEmail(code);
       loadUser(true);
       setShowCode(false);
-      setAlert({ type: "success", text: 'Email changed successfully!' });
+      setAlert({
+        type: "success",
+        text: LANGUAGES[user.locale].Profile.EmailSuccess,
+      });
     } catch (error) {
-      setAlert({ type: "error", text: error.message });
+      handleErrors(error.message);
     }
     setLoading(false);
   };
@@ -51,7 +81,22 @@ export default function Profile() {
     loading();
     try {
       await Auth.ChangePassword(currentPassword, newPassword);
-      setAlert({ type: "success", text: 'Password changed successfully!' });
+      setAlert({
+        type: "success",
+        text: LANGUAGES[user.locale].Profile.PasswordSuccess,
+      });
+    } catch (error) {
+      handleErrors(error.message);
+    }
+    setLoading(false);
+  };
+
+  const handleChangeLanguage = async () => {
+    loading();
+    try {
+      await Auth.ChangeLanguage(language);
+      loadUser(true);
+      navigate(ROUTES[language].PROFILE);
     } catch (error) {
       setAlert({ type: "error", text: error.message });
     }
@@ -68,16 +113,18 @@ export default function Profile() {
     newPassword !== repeatPassword ||
     newPassword.length < 8;
 
+  const disabledLanguage = () => language === user.locale;
+
   const renderEmail = () => (
     <>
       <Input
         type="email"
-        placeholder="Email"
+        placeholder={LANGUAGES[user.locale].Email}
         value={email}
         handler={setEmail}
       />
       <Button
-        text="Change Email"
+        text={LANGUAGES[user.locale].Profile.ChangeEmail}
         disabled={disabledEmail()}
         handler={() => handleChangeEmail()}
       />
@@ -87,7 +134,7 @@ export default function Profile() {
   const renderCode = () => (
     <>
       <Title
-        text={`Please, check your email and send the code.`}
+        text={LANGUAGES[user.locale].Profile.CodeAlert}
         color="text-amber-500"
         size="text-sm"
       />
@@ -113,25 +160,25 @@ export default function Profile() {
       <div className="mb-4 w-full flex flex-col gap-4 justify-center">
         <Input
           type="password"
-          placeholder="Current Password"
+          placeholder={LANGUAGES[user.locale].Profile.CurrentPassword}
           value={currentPassword}
           handler={setCurrentPassword}
         />
         <Input
           type="password"
-          placeholder="New Password"
+          placeholder={LANGUAGES[user.locale].Profile.NewPassword}
           value={newPassword}
           handler={setNewPassword}
           showTooltip
         />
         <Input
           type="password"
-          placeholder="Repeat New Password"
+          placeholder={LANGUAGES[user.locale].Profile.RepeatNewPassword}
           value={repeatPassword}
           handler={setRepeatPassword}
         />
         <Button
-          text="Change Password"
+          text={LANGUAGES[user.locale].Profile.ChangePassword}
           disabled={disabledPassword()}
           handler={() => handlePassword()}
         />
@@ -139,12 +186,37 @@ export default function Profile() {
     </Form>
   );
 
+  const renderChangeLanguage = () => (
+    <Form>
+      <div className="mb-4 w-full flex flex-col gap-4 justify-center">
+        <Select value={language} handler={setLanguage}>
+          {Object.keys(LANGUAGES).map((l) => (
+            <option key={l} value={l}>
+              {LANGUAGES[user.locale].Languages[l]}
+            </option>
+          ))}
+        </Select>
+        <Button
+          text={LANGUAGES[user.locale].Profile.ChangeLanguage}
+          disabled={disabledLanguage()}
+          handler={() => handleChangeLanguage()}
+        />
+      </div>
+    </Form>
+  );
+
   return (
     <section>
-      <Title text="Profile" back="/home" />
+      <Title
+        text={LANGUAGES[user.locale].Profile.Profile}
+        back={ROUTES[user.locale].HOME}
+      />
       <Alert type={alert?.type} text={alert?.text} />
-      {renderChangeEmail()}
-      {renderChangePassword()}
+      <div className="grid sm:grid-cols-3 gap-2">
+        {renderChangeEmail()}
+        {renderChangePassword()}
+        {renderChangeLanguage()}
+      </div>
     </section>
   );
 }
