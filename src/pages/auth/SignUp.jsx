@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useOutletContext } from "react-router-dom";
+import { AppContext } from "../../context";
+import { LANGUAGES, ROUTES } from "../../constants";
 import { isValidEmail } from "../../helpers";
 import { AuthLink, AuthTitle, Button, Input } from "../../components";
 import SignUpImage from "../../images/signup.svg";
 
 export default function SignUp() {
+  const { state } = useContext(AppContext);
   const { setImg, setAlert, signUp } = useOutletContext();
   const [email, setEmail] = useState("");
   const [pwd, setPwd] = useState("");
@@ -24,11 +27,11 @@ export default function SignUp() {
 
   return (
     <form>
-      <AuthTitle text="sign up" />
+      <AuthTitle text={LANGUAGES[state.lang].Auth.SignUpTitle} />
       <div className="mb-4">
         <Input
           type="email"
-          placeholder="Email"
+          placeholder={LANGUAGES[state.lang].Email}
           value={email}
           handler={setEmail}
         />
@@ -36,7 +39,7 @@ export default function SignUp() {
       <div className="mb-4">
         <Input
           type="password"
-          placeholder="Password"
+          placeholder={LANGUAGES[state.lang].Password}
           value={pwd}
           handler={setPwd}
           showTooltip
@@ -45,18 +48,22 @@ export default function SignUp() {
       <div className="mb-4">
         <Input
           type="password"
-          placeholder="Repeat the Password"
+          placeholder={LANGUAGES[state.lang].Auth.RepeatPassword}
           value={repeat}
           handler={setRepeat}
         />
       </div>
       <Button
-        text="Sign Up"
+        text={LANGUAGES[state.lang].Auth.SignUpButton}
         disabled={disabled()}
         handler={() => signUp(email, pwd, repeat)}
       />
       <div className="w-full text-center mt-6">
-        <AuthLink text="Back to Sign In" to="/" size="xl" />
+        <AuthLink
+          text={LANGUAGES[state.lang].Auth.BackToSignIn}
+          to={ROUTES[state.lang].SIGN_IN}
+          size="xl"
+        />
       </div>
     </form>
   );
