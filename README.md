@@ -1,5 +1,7 @@
 # Complete Login Flow using React, AWS Amplify (Auth with Cognito / GraphQL with DynamoDB / Hosting with S3 and CloudFront)
 
+![amplify](./readme-images/amplify.png)
+
 Running version: <https://amplifylogintutorial.pocz.io/>
 
 ## React and Tailwind
