@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+import { AppContext } from "../../context";
+import { LANGUAGES, ROUTES } from "../../constants";
 import Auth from "../../api/auth";
-import { Alert, Loading } from "../../components";
+import { Alert, Flags, Loading } from "../../components";
 
 export default function AuthLayout() {
   const navigate = useNavigate();
+  const { state } = useContext(AppContext);
   const [img, setImg] = useState();
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState();
@@ -24,10 +27,13 @@ export default function AuthLayout() {
     try {
       await Auth.SignIn(email, pwd, remember);
       stopLoading();
-      navigate("/home");
+      navigate(ROUTES[state.lang].HOME);
     } catch (err) {
       stopLoading();
-      setAlert({ type: "error", text: "Sorry, Unable to login" });
+      setAlert({
+        type: "error",
+        text: LANGUAGES[state.lang].CommonError.Login,
+      });
     }
   };
 
@@ -36,14 +42,20 @@ export default function AuthLayout() {
     try {
       await Auth.ForgotPassword(email);
       stopLoading();
-      navigate("/redefinepassword", {
-        state: { email, alert: { type: "info", text: "Check your Email" } },
+      navigate(ROUTES[state.lang].REDEFINE_PASSWORD, {
+        state: {
+          email,
+          alert: {
+            type: "info",
+            text: LANGUAGES[state.lang].Auth.ForgotPasswordSuccess,
+          },
+        },
       });
     } catch (err) {
       stopLoading();
       setAlert({
         type: "error",
-        text: "Unable to send code, email is correct?",
+        text: LANGUAGES[state.lang].CommonError.SendCode,
       });
     }
   };
@@ -53,17 +65,20 @@ export default function AuthLayout() {
     try {
       await Auth.RedefinePassword(email, code, pwd);
       stopLoading();
-      navigate("/", {
+      navigate(ROUTES[state.lang].SIGN_IN, {
         state: {
           email,
-          alert: { type: "success", text: "Password changed successfully!" },
+          alert: {
+            type: "success",
+            text: LANGUAGES[state.lang].Auth.RedefinePasswordSuccess,
+          },
         },
       });
     } catch (err) {
       stopLoading();
       setAlert({
         type: "error",
-        text: "Unable to redifine password, email, code or new password are wrong!",
+        text: LANGUAGES[state.lang].CommonError.RedefinePassword,
       });
     }
   };
@@ -73,14 +88,20 @@ export default function AuthLayout() {
     try {
       await Auth.SignUp(email, pwd, "en-US");
       stopLoading();
-      navigate("/confirmsignup", {
-        state: { email, alert: { type: "info", text: "Check your Email" } },
+      navigate(ROUTES[state.lang].CONFIRM_SIGN_UP, {
+        state: {
+          email,
+          alert: {
+            type: "info",
+            text: LANGUAGES[state.lang].Auth.SignUpSuccess,
+          },
+        },
       });
     } catch (err) {
       stopLoading();
       setAlert({
         type: "error",
-        text: "Unable to Register, email, code or new password are wrong!",
+        text: LANGUAGES[state.lang].CommonError.SignUp,
       });
     }
   };
@@ -90,17 +111,20 @@ export default function AuthLayout() {
     try {
       await Auth.ResendConfirmationCode(email);
       stopLoading();
-      navigate("/confirmsignup", {
+      navigate(ROUTES[state.lang].CONFIRM_SIGN_UP, {
         state: {
           email,
-          alert: { type: "success", text: "Code Resent, Check your Email" },
+          alert: {
+            type: "success",
+            text: LANGUAGES[state.lang].Auth.ResendConfirmationSuccess,
+          },
         },
       });
     } catch (err) {
       stopLoading();
       setAlert({
         type: "error",
-        text: "Unable to send code, email is correct?",
+        text: LANGUAGES[state.lang].CommonError.SendCode,
       });
     }
   };
@@ -110,17 +134,20 @@ export default function AuthLayout() {
     try {
       await Auth.ConfirmSignUp(email, code);
       stopLoading();
-      navigate("/", {
+      navigate(ROUTES[state.lang].SIGN_IN, {
         state: {
           email,
-          alert: { type: "success", text: "Confirmation successful!" },
+          alert: {
+            type: "success",
+            text: LANGUAGES[state.lang].Auth.ConfirmRegistrationSuccess,
+          },
         },
       });
     } catch (err) {
       stopLoading();
       setAlert({
         type: "error",
-        text: "Unable to confirm registration, email or code are wrong!",
+        text: LANGUAGES[state.lang].CommonError.ConfirmSignUp,
       });
     }
   };
@@ -130,7 +157,7 @@ export default function AuthLayout() {
     try {
       await Auth.GetUser();
       setLoading(false);
-      navigate('/home')
+      navigate(ROUTES[state.lang].HOME);
     } catch (error) {
       setLoading(false);
     }
@@ -144,6 +171,7 @@ export default function AuthLayout() {
     <main className="h-screen mx-auto bg-white">
       {loading && <Loading />}
       <section className="container h-full fixed">
+        {Flags()}
         <div className="h-full flex flex-col-reverse md:flex-row items-center justify-evenly">
           <div className="w-10/12 md:w-6/12 lg:w-4/12 md:mb-0">
             {img && <img src={img} alt="SignUp" className="w-full" />}
