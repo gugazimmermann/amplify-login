@@ -22,6 +22,7 @@ const SignIn = async (email, pwd, remember) => {
     await AmplifyAuth.completeNewPassword(auth, pwd);
   if (remember) await AmplifyAuth.rememberDevice();
   else await AmplifyAuth.forgetDevice();
+  return auth;
 };
 
 const ForgotPassword = async (email) => {
