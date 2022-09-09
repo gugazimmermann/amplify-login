@@ -1,387 +1,474 @@
 # Complete Login Flow using React, AWS Amplify (Auth with Cognito / GraphQL with DynamoDB / Hosting with S3 and CloudFront)
 
-![amplify](./readme-images/amplify.png)
+![amplify](./readme-images/amplify2.png)
 
 Running version: <https://amplifylogintutorial.pocz.io/>
 
-## React and Tailwind
+## Part 1
 
-Code: <https://github.com/gugazimmermann/amplify-login/tree/v0.1>
+Here: <https://www.linkedin.com/pulse/complete-login-flow-using-react-aws-amplify-auth-s3-jos%C3%A9-augusto/>
 
-As Front-End to this app we will use React and Tailwind, and will responsive and designed to small devices first. You can see more about React and Tailwind here:
+or here: <https://medium.com/@gugazimmermann/complete-login-flow-using-react-aws-amplify-auth-with-cognito-graphql-with-dynamodb-hosting-d0f10718e217>
 
-* <https://create-react-app.dev/docs/getting-started>
+Code: <https://github.com/gugazimmermann/amplify-login/tree/part-1>
 
-* <https://tailwindcss.com/docs/guides/create-react-app>
+## PART 2
 
-This first part is pretty straight forward, choose the folder that you want the project and type `npx create-react-app amplify-login`.
+## Multi-Language App With Cognito
 
-Enter the amplify-login folder, and install tailwind dependencies `npm install -D tailwindcss postcss autoprefixer` and init tailwind `npx tailwindcss init -p`.
+Code: <https://github.com/gugazimmermann/amplify-login/tree/v1.2>
 
-Now open `tailwind.config.js` and change content to
+We already have a running app using Amplify / Cognito, now we want to make this app multi-language. For this we need a flag component to let user change the language, a context to store this information before the user login and translate the routes and text of the app.
 
-```JS
-  content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
-  ],
-```
+For now we will use just English and Portuguese, but can be translated to any other language and have any number os languages to choose.
 
-Remove all the content inside `src/index.css` and add the tailwind base, components and utilities:
+First of all open the `.env` file and add `REACT_APP_STATE=amplifylogin`, remember to re-start the app to load the env vars (`npm start`).
 
-```CSS
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-```
-
-Delete `src/logo.svg` and `src/App.css`, we will not use it anymore. Open `src/App.js`, delete all content and paste:
+Create a file to store the constants `src/constants/index.js`
 
 ```JS
-function App() {
-  return <h1 className="text-3xl font-bold underline">Hello world!</h1>;
+import { pt_br_lang, en_us_lang } from "./languages";
+import { pt_br_routes, en_us_routes } from "./routes";
+
+export const STATENAME = process.env.REACT_APP_STATE || "amplifylogin";
+
+export const TYPES = {
+  UPDATE_LANG: "UPDATE_LANG",
+};
+
+export const LANGUAGES = {
+  "en-US": en_us_lang,
+  "pt-BR": pt_br_lang,
+};
+
+export const ROUTES = {
+  "en-US": en_us_routes,
+  "pt-BR": pt_br_routes,
+};
+```
+
+and translate the Routes.
+
+`src/constants/routes/en_us.js`
+
+```JS
+const en_us_routes = {
+  SIGN_IN: "/",
+  FORGOT_PASSWORD: "/forgot-password",
+  REDEFINE_PASSWORD: "/redefine-password",
+  SIGN_UP: "/registration",
+  CONFIRM_SIGN_UP: "/confirm-registration",
+  HOME: "/home",
+  PROFILE: "/profile",
+};
+
+export default en_us_routes;
+
+```
+
+`src/constants/routes/pt_br.js`
+
+```JS
+const pt_br_routes = {
+  SIGN_IN: "/",
+  FORGOT_PASSWORD: "/esqueceu-senha",
+  REDEFINE_PASSWORD: "/redefinir-senha",
+  SIGN_UP: "/registro",
+  CONFIRM_SIGN_UP: "/confirmar-registro",
+  HOME: "/inicial",
+  PROFILE: "/perfil",
+};
+
+export default pt_br_routes;
+
+```
+
+`src/constants/routes/index.js`
+
+```JS
+export { default as pt_br_routes } from "./pt_br";
+export { default as en_us_routes } from "./en_us";
+
+```
+
+If the user choose english, the URL will be in english, if choose portugue the URL will be in portuguese.
+
+Now we need to translate all the app, let's do it in parts, don't matter if we need to repeat one or another word, at the end will be better if we want to add more languages and someone help with the translation, because each part have it own context and expressions.
+
+`src/constants/languages/en_us.js`
+
+```JS
+const en_us_lang = {
+  Loading: "Loading",
+  Email: "Email",
+  Password: "Password",
+  Code: "Code",
+  PasswordRules: {
+    Chars: "Must have at least 8 chars",
+    Lowercase: "Requires Lowercase",
+    Uppercase: "Requires Uppercase",
+    Number: "Requires Number",
+    Symbol: "Requires Symbol",
+  },
+  NotFound: {
+    Sorry: "Sorry",
+    PageNotFound: "Page Not Found",
+  },
+  CommonError: {
+    Login: "Sorry, Unable to login",
+    SendCode: "Unable to send code, email is correct?",
+    RedefinePassword:
+      "Unable to redefine password, email, code or new password are wrong!",
+    SignUp: "Unable to Register. Email already exists or Password are wrong!",
+    ConfirmSignUp: "Unable to confirm registration, email or code are wrong!",
+    CodeError: "Invalid verification code provided, please try again.",
+    EmailError: "An account with the given email already exists.",
+  },
+  Auth: {
+    SignInTitle: "Sign In",
+    RememberMe: "Remember Me",
+    ForgotPassword: "Forgot Password?",
+    ForgotPasswordSuccess: "Check your Email",
+    SignInButton: "Sign In",
+    NotRegistered: "Not Registered?",
+    ForgotPasswordTitle: "Forgot Password",
+    SendCode: "Send Code",
+    BackToSignIn: "Back to Sign In",
+    RedefinePasswordTitle: "Redefine Password",
+    RepeatPassword: "Repeat Password",
+    RedefinePasswordSuccess: "Password changed successfully!",
+    RedefinePasswordButton: "Redefine Password",
+    SignUpTitle: "Sign Up",
+    SignUpSuccess: "Check your Email",
+    SignUpButton: "Sign Up",
+    ConfirmRegistrationTitle: "Confirm Registration",
+    ResendConfirmationCode: "Resend Confirmation Code",
+    ResendConfirmationSuccess: "Code Resent, Check your Email",
+    ConfirmRegistrationSuccess: "Confirmation successful!",
+    ConfirmRegistrationButton: "Confirm",
+  },
+  Profile: {
+    Profile: "Profile",
+    SignOut: "Sign Out",
+    ChangeEmail: "Change Email",
+    CurrentPassword: "Current Password",
+    NewPassword: "New Password",
+    RepeatNewPassword: "Repeat New Password",
+    ChangePassword: "Change Password",
+    CodeAlert: "Please, check your email and send the code.",
+    EmailSuccess: "Email changed successfully!",
+    PasswordSuccess: "Password changed successfully!",
+  },
+};
+
+export default en_us_lang;
+
+```
+
+`src/constants/languages/pt_br.js`
+
+```JS
+ const pt_br_lang = {
+  Loading: "Carregando",
+  Email: "Email",
+  Password: "Senha",
+  Code: "Código",
+  PasswordRules: {
+    Chars: "Pelo menos 8 caracteres",
+    Lowercase: "Requer Minúsculas",
+    Uppercase: "Requer Maiúsculas",
+    Number: "Requer Número",
+    Symbol: "Requer Símbolo",
+  },
+  NotFound: {
+    Sorry: "Desculpe",
+    PageNotFound: "Página Não Encontrada",
+  },
+  CommonError: {
+    Login: "Desculpe, Não foi possível entrar",
+    SendCode: "Não foi possível enviar o código, o email está correto?",
+    RedefinePassword:
+      "Não foi possível redefinir a senha, e-mail, código ou nova senha estão errados!",
+    SignUp:
+      "Não foi possível registrar. O e-mail já existe ou a senha está errada!",
+    ConfirmSignUp:
+      "Não foi possível confirmar o registro, e-mail ou código estão errados!",
+    CodeError: "Código de verificação inválido. Tente novamente.",
+    EmailError: "Já existe uma conta com este e-mail.",
+  },
+  Auth: {
+    SignInTitle: "Entrar",
+    RememberMe: "Manter Conectado",
+    ForgotPassword: "Esqueceu a Senha?",
+    ForgotPasswordSuccess: "Verifique seu Email",
+    SignInButton: "Entrar",
+    NotRegistered: "Não tem Registro?",
+    ForgotPasswordTitle: "Esqueceu a Senha?",
+    SendCode: "Enviar Código",
+    BackToSignIn: "Votlar para Entrar",
+    RedefinePasswordTitle: "Redefinir Senha",
+    RepeatPassword: "Repita a Senha",
+    RedefinePasswordSuccess: "Senha Alterada com Sucesso!",
+    RedefinePasswordButton: "Redefinir Senha",
+    SignUpTitle: "Registro",
+    SignUpSuccess: "Verifique seu Email",
+    SignUpButton: "Registrar",
+    ConfirmRegistrationTitle: "Confirmar Registro",
+    ResendConfirmationCode: "Re-enviar Código de Confirmação",
+    ResendConfirmationSuccess: "Código enviado, verifique seu email",
+    ConfirmRegistrationSuccess: "Confirmação realizada com sucesso!",
+    ConfirmRegistrationButton: "Confirmar",
+  },
+  Profile: {
+    Profile: "Perfil",
+    SignOut: "Sair",
+    ChangeEmail: "Alterar Email",
+    CurrentPassword: "Senha Atual",
+    NewPassword: "Nova Senha",
+    RepeatNewPassword: "Repetir Nova Senha",
+    ChangePassword: "Alterar Senha",
+    CodeAlert: "Por favor, verifique seu email e envie o código.",
+    EmailSuccess: "Email alterado com sucesso!",
+    PasswordSuccess: "Senha alterada com sucesso!",
+  },
+};
+
+export default pt_br_lang;
+
+```
+
+`src/constants/languages/index.js`
+
+```JS
+export { default as pt_br_lang } from "./pt_br";
+export { default as en_us_lang } from "./en_us";
+
+```
+
+Now we can move on and create the app context, so the user can choose a language before to the login, and using the localStorage we can remember what language the user want to see the app.
+
+First create the Reducer, that will receive the dispach event and the payload to change the language.
+
+`src/context/reducers.js`
+
+```JS
+import { STATENAME, TYPES } from "../constants";
+
+function saveState(state) {
+  localStorage.setItem(STATENAME, JSON.stringify(state));
 }
 
-export default App;
+function updateLang(state, payload) {
+  const newState = { ...state, lang: payload };
+  saveState(newState);
+  return newState;
+}
+
+export default function AppReducer(state, { type, payload }) {
+  switch (type) {
+    case TYPES.UPDATE_LANG:
+      return updateLang(state, payload);
+    default:
+      throw new Error("TYPE NOT FOUND");
+  }
+}
 
 ```
 
-Now run `npm start` to see the Hello world!
+And now the Context
 
-## React Router v6
-
-Code: <https://github.com/gugazimmermann/amplify-login/tree/v0.2>
-
-To navigate the pages we will need React Router, you can see more about it here: <https://reactrouter.com/en/main>
-
-Run `npm install react-router-dom@6` to install the package, open `src/index.js` and add
-`import { BrowserRouter } from "react-router-dom";` after `import ReactDOM from 'react-dom/client';`. Inside the render part, add:
+`src/context/index.jsx`
 
 ```JS
-<React.StrictMode>
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>
-</React.StrictMode>
-```
+import React, { createContext, useReducer } from "react";
+import { STATENAME } from "../constants";
+import AppReducer from "./reducers";
 
-Now create two initial pages and a loading component. Since we will use Lazy Loading is good have a loading for the Suspense.
+const initial = { lang: "en-US" };
 
-Create `src/components/loading.jsx` with a loading text and a spinning icon:
+const getState = () =>
+  localStorage.getItem(STATENAME)
+    ? JSON.parse(localStorage.getItem(STATENAME))
+    : initial;
 
-```JS
-const Loading = () => (
-  <div className="fixed inset-0 bg-gray-900 bg-opacity-90 overflow-y-auto h-full w-full z-50">
-    <div className="flex flex-col justify-center items-center h-full w-full">
-      <div className="mb-4 text-primary text-2xl font-bold">Loading...</div>
-      <div className="animate-spin rounded-full h-32 w-32 border-b-8 border-primary" />
-    </div>
-  </div>
-);
+const mainReducer = (state, action) => AppReducer(state, action);
 
-export default Loading;
+const AppContext = createContext({ state: getState(), dispatch: () => null });
 
-```
-
-Create a Not Found page, just in case the user get lost.
-
-`src/pages/not-found/NotFound.jsx`
-
-```JS
-const NotFound = () => (
-  <div className="container bg-white mx-auto">
-    <main className="flex h-screen justify-center items-center">
-      <h1 className="text-3xl text-primary">404! Page Not Found!</h1>
-    </main>
-  </div>
-);
-
-export default NotFound;
-
-```
-
-and a initial layout for the authentication forms
-
-`src/pages/auth/AuthLayout.jsx`
-
-```JS
-export default function AuthLayout() {
+function AppProvider({ children }) {
+  const [state, dispatch] = useReducer(mainReducer, getState());
   return (
-    <section className="h-screen mx-auto bg-white">
-      <div className="container h-full fixed">
-        <div className="h-full flex flex-col-reverse md:flex-row items-center justify-center">
-          LAYOUT
-        </div>
-      </div>
-    </section>
+    <AppContext.Provider value={{ state, dispatch }}>
+      {children}
+    </AppContext.Provider>
   );
 }
 
-```
-
-With this done, we can change `src/App.js` to handle the routes.
-
-```JS
-import { lazy, Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
-import Loading from "./components/loading";
-
-const NotFound = lazy(() => import("./pages/not-found/NotFound"));
-const AuthLayout = lazy(() => import("./pages/auth/AuthLayout"));
-
-function App() {
-  return (
-    <Suspense fallback={<Loading />}>
-      <Routes>
-        <Route path="/" element={<AuthLayout />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </Suspense>
-  );
-}
-
-export default App;
+export { AppProvider, AppContext };
 
 ```
 
-## Images and Auth pages templates
+And to access this, we need to change the index to encapsulate the app inside the context.
 
-code: <https://github.com/gugazimmermann/amplify-login/tree/v0.3>
-
-To give the page some life let’s add some images. First we will change the favicon, I’m using this one:
-
-![FavIcon](../public/logo192.png)
-
-<https://www.flaticon.com/free-icon/programming_1005141?term=code&page=1&position=13&page=1&position=13&related_id=1005141&origin=tag>
-
-And to create the favicon this page helps a lot: <https://favicon.io/favicon-converter/>
-
-Just upload the icon image, click download, open the zip file and copy `favicon.ico`, `android-chrome-192x192.png`, `android-chrome-512x512.png` to  `public` folder. Rename both to `logo192.png` and `logo512.png`.
-
-Open `public/index.html` and change `<title>React App</title>` to `<title>%REACT_APP_TITLE%</title>`. Create a `.env` file in the root of the app and paste `REACT_APP_TITLE=Amplify Login`.
-
-Remember that every time that you change something inside the `.env` file you will need to stop the app and run again with `npm start`.
-
-To have some images in the app, you can go to unDraw <https://undraw.co/search> and search for every part of the auth flow, like: sign in, sign up, forgot password, confirm sign up, redefine password and page not found. I have selected some and you can copy from here: <https://github.com/gugazimmermann/amplify-login/tree/v0.3/src/images>, put the images inside `src/images/`
-
-Let’s change the Not Found page `src/pages/not-found/NotFound.jsx`:
+`src/index.js`
 
 ```JS
-import NotFoundImg from '../../images/not_found.svg';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import { Amplify } from "aws-amplify";
+import awsconfig from "./aws-exports";
+import { AppProvider } from "./context";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
 
-const NotFound = () => (
-  <div className="container bg-white mx-auto">
-    <main className="flex flex-col h-screen justify-center items-center">
-      <img src={NotFoundImg} alt="not found" className="max-w-xs" />
-      <h1 className='mt-4 text-xl'>Sorry, Page Not Found.</h1>
-    </main>
-  </div>
+Amplify.configure(awsconfig);
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <AppProvider>
+        <App />
+      </AppProvider>
+    </BrowserRouter>
+  </React.StrictMode>
 );
 
-export default NotFound;
-
 ```
 
-change the AuthLayout page `src/pages/auth/AuthLayout.jsx`:
+The user need to have a way to change the language, we will provide this with a flag component, that will show the flags in the right top of the app.
+
+First we need the flags images and a arrow, that will give the hint to the user to click in the flag and change if needed. The two flags that we will use for now can be found here: <https://github.com/gugazimmermann/amplify-login/tree/main/src/images/flags>.
+
+And we can create the arrow as a component, because we want to change the style to rotate when the menu is open or closed.
+
+`src/images/Arrow.jsx`
 
 ```JS
-import { useState } from "react";
-import { Outlet } from "react-router-dom";
-
-export default function AuthLayout() {
-  const [img, setImg] = useState();
-
+export default function Arrow({ styles }) {
   return (
-    <section className="h-screen mx-auto bg-white">
-      <div className="container h-full fixed">
-        <div className="h-full flex flex-col-reverse md:flex-row items-center justify-evenly">
-          <div className="w-10/12 md:w-6/12 lg:w-4/12 md:mb-0">
-            {img && <img src={img} alt="SignUp" className="w-full" />}
-          </div>
-          <div className="w-10/12 md:w-5/12 lg:w-4/12">
-            <Outlet context={{ setImg }}/>
-          </div>
-        </div>
-      </div>
-    </section>
+    <svg
+      aria-hidden="true"
+      className={styles}
+      fill="currentColor"
+      viewBox="0 0 20 20"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fillRule="evenodd"
+        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+        clipRule="evenodd"
+      />
+    </svg>
   );
 }
-
 ```
 
-Now we are using the state to know what image to show, the Outlet from React Router v6 and passing the setImg in context to the Children pages.
+The Flag component will change the context state when the user select a language and also change the current route that the user in in the moment.
 
-Let’s create some templates to test:
-
-`src/pages/auth/SignUp.jsx`
+`src/components/Flags.jsx`
 
 ```JS
-import { useEffect } from "react";
-import { useOutletContext } from "react-router-dom";
-import SignUpImage from "../../images/signup.svg";
+import { useContext, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { AppContext } from "../context";
+import { LANGUAGES, ROUTES, TYPES } from "../constants";
+import { useCloseModal } from "../helpers";
+import Arrow from "../images/Arrow";
+import BR from "../images/flags/pt-BR.svg";
+import EN from "../images/flags/en-US.svg";
 
-export default function SignUp() {
-  const { setImg } = useOutletContext();
+export default function Flags() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { state, dispatch } = useContext(AppContext);
+  const [open, setOpen] = useState(false);
+  const ref = useCloseModal(open, setOpen);
 
-  useEffect(() => {
-    setImg(SignUpImage);
-  }, [setImg]);
+  function showFlag(lang) {
+    if (lang === "pt-BR")
+      return <img src={BR} alt="Português" className="w-6 h-6" />;
+    return <img src={EN} alt="English" className="w-6 h-6" />;
+  }
 
-  return <form />;
-}
-
-```
-
-`src/pages/auth/ConfirmSignUp.jsx`
-
-```JS
-import { useEffect } from "react";
-import { useOutletContext } from "react-router-dom";
-import ConfirmSignUpImage from "../../images/confirm_signup.svg";
-
-export default function ConfirmSignUp() {
-  const { setImg } = useOutletContext();
-
-  useEffect(() => {
-    setImg(ConfirmSignUpImage);
-  }, [setImg]);
-
-  return <form />;
-}
-
-```
-
-`src/pages/auth/ForgotPassword.jsx`
-
-```JS
-import { useEffect } from "react";
-import { useOutletContext } from "react-router-dom";
-import ForgorPasswordImage from "../../images/forgor_password.svg";
-
-export default function ForgorPassword() {
-  const { setImg } = useOutletContext();
-
-  useEffect(() => {
-    setImg(ForgorPasswordImage);
-  }, [setImg]);
-
-  return <form />;
-}
-
-```
-
-`src/pages/auth/RedefinePassword.jsx`
-
-```JS
-import { useEffect } from "react";
-import { useOutletContext } from "react-router-dom";
-import RedefinePasswordImage from "../../images/redefine_password.svg";
-
-export default function RedefinePassword() {
-  const { setImg } = useOutletContext();
-
-  useEffect(() => {
-    setImg(RedefinePasswordImage);
-  }, [setImg]);
-
-  return <form />;
-}
-
-```
-
-and finally `/pages/auth/SignIn.jsx`, for this one we will create the form itself.
-
-```JS
-import { useEffect } from "react";
-import { useOutletContext, Link } from "react-router-dom";
-import SignInImage from "../../images/signin.svg";
-
-export default function SignIn() {
-  const { setImg } = useOutletContext();
-
-  useEffect(() => {
-    setImg(SignInImage);
-  }, [setImg]);
+  function handleChangeLanguage(lang) {
+    const currentRoute = Object.keys(ROUTES[state.lang])
+      .map((k) => ({ key: k, value: ROUTES[state.lang][k] }))
+      .find((r) => r.value === location.pathname);
+    dispatch({ type: TYPES.UPDATE_LANG, payload: lang });
+    navigate(ROUTES[lang][currentRoute.key]);
+    setOpen(false);
+  }
 
   return (
-    <form>
-      <div className="mb-4">
-        <input
-          type="email"
-          className="block w-full px-4 py-2 font-normal border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:border-indigo-500 focus:outline-none"
-          placeholder="Email"
-        />
-      </div>
-      <div className="mb-4">
-        <input
-          type="password"
-          className="block w-full px-4 py-2 font-normal border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:border-indigo-500 focus:outline-none"
-          placeholder="Password"
-        />
-      </div>
-      <div className="flex justify-between items-center mb-4">
-        <div className="form-group form-check">
-          <input
-            type="checkbox"
-            name="checkbox"
-            id="checkbox"
-            className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-indigo-500 checked:border-indigo-500 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
-          />
-          <label className="form-check-label inline-block" htmlFor="checkbox">
-            Remember Me
-          </label>
-        </div>
-        <Link
-          to="/forgorpassword"
-          className="text-indigo-500 hover:text-amber-500 duration-200 transition ease-in-out"
-        >
-          Forgot Password?
-        </Link>
-      </div>
+    <div className="absolute top-2 right-2 z-50">
       <button
         type="button"
-        className="bg-indigo-500 cursor-pointer hover:bg-amber-500 hover:shadow-md focus:bg-amber-500 focus:shadow-md focus:outline-none focus:ring-0 active:bg-amber-500 active:shadow-md inline-block px-2 py-2 text-white font-medium uppercase rounded shadow-md transition duration-150 ease-in-out w-full"
+        className="flex items-center px-1"
+        onClick={() => setOpen(!open)}
       >
-        Sign In
+        {showFlag(state.lang)}
+        <Arrow styles={`ml-1 w-4 h-4 ${open && "rotate-180"}`} />
       </button>
-      <div className="w-full text-center mt-6">
-        <Link
-          to="/signup"
-          className="text-xl text-indigo-500 hover:text-amber-500 duration-200 transition ease-in-out"
-        >
-          Sign Up
-        </Link>
-      </div>
-    </form>
+      <ul
+        ref={ref}
+        className={`flex flex-col items-start pl-1 mt-2 ${!open && "hidden"}`}
+      >
+        {Object.keys(LANGUAGES)
+          .filter((l) => l !== state.lang)
+          .map((l) => (
+            <li key={l}>
+              <button type="button" onClick={() => handleChangeLanguage(l)}>
+                {showFlag(l)}
+              </button>
+            </li>
+          ))}
+      </ul>
+    </div>
   );
 }
-
 ```
 
-and now we need the routes to access the pages, open `src/App.js` and change to:
+and in the components export's file `src/components/index.js` add `export { default as Flags } from "./Flags";`
+
+The routes need to be dynamic now, so change `src/App.js` to receive the current user language and handle the routes.
 
 ```JS
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useContext } from "react";
 import { Routes, Route } from "react-router-dom";
-import Loading from "./components/loading";
+import { AppContext } from "./context";
+import { ROUTES } from "./constants";
+import { Loading } from "./components";
 
-const NotFound = lazy(() => import("./pages/not-found/NotFound"));
-const AuthLayout = lazy(() => import("./pages/auth/AuthLayout"));
-const SignIn = lazy(() => import("./pages/auth/SignIn"));
-const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"));
-const RedefinePassword = lazy(() => import("./pages/auth/RedefinePassword"));
-const SignUp = lazy(() => import("./pages/auth/SignUp"));
-const ConfirmSignUp = lazy(() => import("./pages/auth/ConfirmSignUp"));
+...
 
 function App() {
+  const { state } = useContext(AppContext);
+
   return (
     <Suspense fallback={<Loading />}>
       <Routes>
         <Route element={<AuthLayout />}>
-          <Route path="/" element={<SignIn />} />
-          <Route path="/forgorpassword" element={<ForgotPassword />} />
-          <Route path="/redefinepassword" element={<RedefinePassword />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/confirmsignup" element={<ConfirmSignUp />} />
+          <Route path={ROUTES[state.lang].SIGN_IN} element={<SignIn />} />
+          <Route
+            path={ROUTES[state.lang].FORGOT_PASSWORD}
+            element={<ForgotPassword />}
+          />
+          <Route
+            path={ROUTES[state.lang].REDEFINE_PASSWORD}
+            element={<RedefinePassword />}
+          />
+          <Route path={ROUTES[state.lang].SIGN_UP} element={<SignUp />} />
+          <Route
+            path={ROUTES[state.lang].CONFIRM_SIGN_UP}
+            element={<ConfirmSignUp />}
+          />
+        </Route>
+        <Route element={<Layout />}>
+          <Route path={ROUTES[state.lang].HOME} element={<Home />} />
+          <Route path={ROUTES[state.lang].PROFILE} element={<Profile />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
@@ -389,570 +476,177 @@ function App() {
   );
 }
 
-export default App;
-
 ```
 
-Using Lazy Loading we will load the pages only when needed, making the app faster, AuthLayout will use all the other auth pages as Children and we can keep the code centralized.
+And in the AuthLayout we need to add the Flag component, change all navigate to dynamic routes, and algo all the hard coded text to be dynamic too.
 
-But as you can see in the SignIn page, we will repeat a lot of code and CSS classes in each page, better if we split this in components.
-
-## Slipt Code into Components
-
-code: <https://github.com/gugazimmermann/amplify-login/tree/v0.4>
-
-Starting with the Input, that will be used a lot in each form, create `src/components/Input.jsx`
+The final `src/pages/auth/AuthLayout.jsx` will be like this:
 
 ```JS
-import { useState } from 'react';
-
-const Input = ({ type, placeholder, value, handler }) => {
- const [inputType, setInputType] = useState(type);
-
- function handleChangeInputType() {
-  if (inputType === 'password') setInputType('text');
-  else if (inputType === 'text') setInputType('password');
- }
-
- return (
-  <div className="relative">
-   <input
-    type={inputType}
-    value={value}
-    onChange={(e) => handler(e.target.value)}
-    className=" block w-full px-4 py-2 font-normal border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:border-indigo-500 focus:outline-none"
-    placeholder={placeholder}
-   />
-   {type === 'password' && (
-    <button type="button" onClick={() => handleChangeInputType()} className="absolute top-1.5 right-1">
-     <i className={`bx bx-${inputType === 'password' ? 'show' : 'hide'} text-slate-400 text-2xl`} />
-    </button>
-   )}
-  </div>
- );
-}
-
-export default Input;
-
-```
-
-The Input will receive type, placeholder, value and a handler to change the value, we will also see if the input is a password type and put a icon, so the user can see or hide the password.
-
-To use some icons let's install Boxicons <https://boxicons.com/>, simple and fast, just add `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" >` in `public/index.html`, right after Title, inside the head.
-
-Sign In have a Remember Me part, let’s create a component for this too:
-
-`src/components/RememberMe.jsx`
-
-```JS
-const RememberMe = ({ remember, setRemember }) => (
-  <div className="form-group form-check">
-    <input
-      type="checkbox"
-      name="checkbox"
-      id="checkbox"
-      defaultChecked={remember}
-      onChange={() => setRemember(!remember)}
-      className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-indigo-500 checked:border-indigo-500 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
-    />
-    <label className="form-check-label inline-block" htmlFor="checkbox">
-      Remember Me
-    </label>
-  </div>
-);
-
-export default RememberMe;
-
-```
-
-The button will be used in every form, so create `src/components/AuthButton.jsx`
-
-```JS
-const AuthButton = ({ text, disabled, handler }) => (
-  <button
-    type="button"
-    onClick={handler}
-    disabled={disabled}
-    className={`${
-      disabled
-        ? "bg-gray-600 cursor-not-allowed"
-        : "bg-indigo-500 cursor-pointer hover:bg-amber-500 hover:shadow-md focus:bg-amber-500 focus:shadow-md focus:outline-none focus:ring-0 active:bg-amber-500 active:shadow-md"
-    } inline-block px-2 py-2 text-white font-medium uppercase rounded shadow-md transition duration-150 ease-in-out w-full`}
-  >
-    {text}
-  </button>
-);
-
-export default AuthButton;
-```
-
-If the form is not fully filled, we can disable the button. And the form need a link to send user back to Sign In, or send the user to the Sign Up page.
-
-`src/components/AuthLink.jsx`
-
-```JS
-import { Link } from "react-router-dom";
-
-const AuthLink = ({ to, text, size }) => (
-  <Link
-    to={to}
-    className={`text-indigo-500 hover:text-amber-500 duration-200 transition ease-in-out ${
-      size && `text-${size}`
-    }`}
-  >
-    {text}
-  </Link>
-);
-
-export default AuthLink;
-
-```
-
-With the components we can change the Sign In form:
-
-`src/pages/auth/SignIn.jsx`
-
-```JS
-import { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
-import Input from "../../components/Input";
-import RememberMe from "../../components/RememberMe";
-import AuthLink from "../../components/AuthLink";
-import AuthButton from "../../components/AuthButton";
-import SignInImage from "../../images/signin.svg";
-
-export default function SignIn() {
-  const { setImg } = useOutletContext();
-  const [email, setEmail] = useState("");
-  const [pwd, setPwd] = useState("");
-  const [remember, setRemember] = useState(false);
-
-  useEffect(() => {
-    setImg(SignInImage);
-  }, [setImg]);
-
-  const disabled = () => email === "" || pwd === "";
-
-  return (
-    <form>
-      <div className="mb-4">
-        <Input
-          type="email"
-          placeholder="Email"
-          value={email}
-          handler={setEmail}
-        />
-      </div>
-      <div className="mb-4">
-        <Input
-          type="password"
-          placeholder="Password"
-          value={pwd}
-          handler={setPwd}
-        />
-      </div>
-      <div className="flex justify-between items-center mb-4">
-        <RememberMe remember={remember} setRemember={setRemember} />
-        <AuthLink to="/forgorpassword" text="Forgot Password?" />
-      </div>
-      <AuthButton
-        text="Sign In"
-        disabled={disabled()}
-        handler={() => {
-          console.log(email, pwd, remember);
-        }}
-      />
-      <div className="w-full text-center mt-6">
-        <AuthLink to="/signup" text="Sign Up" size="xl" />
-      </div>
-    </form>
-  );
-}
-
-```
-
-## Finishing the Auth Pages
-
-code: <https://github.com/gugazimmermann/amplify-login/tree/v0.5>
-
-First, we need one more component, the Title, so the user can see in what page he is.
-
-`src/components/AuthTitle.jsx`
-
-```JS
-const AuthTitle = ({ text }) => (
-  <h1 className="text-xl text-center mb-4 uppercase">{text}</h1>
-);
-
-export default AuthTitle;
-
-```
-
-Now add the title in `src/pages/auth/SignIn.jsx`
-
-just change the components import to `import { AuthButton, AuthLink, AuthTitle, Input, RememberMe } from "../../components";` and add `<AuthTitle text="sign in" />` right after `<form>`.
-
-Change the other auth pages to have content in place of the template used before:
-
-`src/pages/auth/ForgotPassword.jsx`
-
-```JS
-import { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
-import { AuthButton, AuthLink, AuthTitle, Input } from "../../components";
-import ForgorPasswordImage from "../../images/forgor_password.svg";
-
-export default function ForgorPassword() {
-  const { setImg } = useOutletContext();
-  const [email, setEmail] = useState("");
-
-  useEffect(() => {
-    setImg(ForgorPasswordImage);
-  }, [setImg]);
-
-  const disabled = () => email === "";
-
-  return (
-    <form>
-      <AuthTitle text="forgot password" />
-      <div className="mb-4">
-        <Input
-          type="email"
-          placeholder="Email"
-          value={email}
-          handler={setEmail}
-        />
-      </div>
-      <AuthButton
-        text="Send Code"
-        disabled={disabled()}
-        handler={() => {
-          console.log(email);
-        }}
-      />
-      <div className="w-full text-center mt-6">
-        <AuthLink text="Back to Sign In" to="/" size="xl" />
-      </div>
-    </form>
-  );
-}
-
-```
-
-`src/pages/auth/RedefinePassword.jsx`
-
-```JS
-import { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
-import { AuthButton, AuthLink, AuthTitle, Input } from "../../components";
-import RedefinePasswordImage from "../../images/redefine_password.svg";
-
-export default function RedefinePassword() {
-  const { setImg } = useOutletContext();
-  const [email, setEmail] = useState("");
-  const [code, setCode] = useState("");
-  const [pwd, setPwd] = useState("");
-  const [repeat, setRepeat] = useState("");
-
-  useEffect(() => {
-    setImg(RedefinePasswordImage);
-  }, [setImg]);
-
-  const disabled = () => email === "" || pwd === "" || repeat === "";
-
-  return (
-    <form>
-      <AuthTitle text="redefine password" />
-      <div className="mb-4">
-        <Input
-          type="email"
-          placeholder="Email"
-          value={email}
-          handler={setEmail}
-        />
-      </div>
-      <div className="mb-4">
-        <Input type="text" placeholder="Code" value={code} handler={setCode} />
-      </div>
-      <div className="mb-4">
-        <Input
-          type="password"
-          placeholder="Password"
-          value={pwd}
-          handler={setPwd}
-        />
-      </div>
-      <div className="mb-4">
-        <Input
-          type="password"
-          placeholder="Repeat Password"
-          value={repeat}
-          handler={setRepeat}
-        />
-      </div>
-      <AuthButton
-        text="Redefine Password"
-        disabled={disabled()}
-        handler={() => {
-          console.log(email, code, pwd, repeat);
-        }}
-      />
-      <div className="w-full text-center mt-6">
-        <AuthLink text="Back to Sign In" to="/" size="xl" />
-      </div>
-    </form>
-  );
-}
-
-```
-
-`src/pages/auth/SignUp.jsx`
-
-```JS
-import { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
-import { AuthButton, AuthLink, AuthTitle, Input } from "../../components";
-import SignUpImage from "../../images/signup.svg";
-
-export default function SignUp() {
-  const { setImg } = useOutletContext();
-  const [email, setEmail] = useState("");
-  const [pwd, setPwd] = useState("");
-  const [repeat, setRepeat] = useState("");
-
-  useEffect(() => {
-    setImg(SignUpImage);
-  }, [setImg]);
-
-  const disabled = () => email === "" || pwd === "" || repeat === "";
-
-  return (
-    <form>
-      <AuthTitle text="sign up" />
-      <div className="mb-4">
-        <Input
-          type="email"
-          placeholder="Email"
-          value={email}
-          handler={setEmail}
-        />
-      </div>
-      <div className="mb-4">
-        <Input
-          type="password"
-          placeholder="Password"
-          value={pwd}
-          handler={setPwd}
-        />
-      </div>
-      <div className="mb-4">
-        <Input
-          type="password"
-          placeholder="Repeat the Password"
-          value={repeat}
-          handler={setRepeat}
-        />
-      </div>
-      <AuthButton
-        text="Sign Up"
-        disabled={disabled()}
-        handler={() => {
-          console.log(email, pwd, repeat);
-        }}
-      />
-      <div className="w-full text-center mt-6">
-        <AuthLink text="Back to Sign In" to="/" size="xl" />
-      </div>
-    </form>
-  );
-}
-
-```
-
-`src/pages/auth/ConfirmSignUp.jsx`
-
-```JS
-import { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
-import { AuthButton, AuthLink, AuthTitle, Input } from "../../components";
-import ConfirmSignUpImage from "../../images/confirm_signup.svg";
-
-export default function ConfirmSignUp() {
-  const { setImg } = useOutletContext();
-  const [email, setEmail] = useState("");
-  const [code, setCode] = useState("");
-
-  useEffect(() => {
-    setImg(ConfirmSignUpImage);
-  }, [setImg]);
-
-  const disabled = () => email === "" || code === "";
-
-  return (
-    <form>
-      <AuthTitle text="confirm registration" />
-      <div className="mb-4">
-        <Input
-          type="email"
-          placeholder="Email"
-          value={email}
-          handler={setEmail}
-        />
-      </div>
-      <div className="mb-4">
-        <Input type="text" placeholder="Code" value={code} handler={setCode} />
-      </div>
-      <AuthButton
-        text="Confim"
-        disabled={disabled()}
-        handler={() => {
-          console.log(email, code);
-        }}
-      />
-      <div className="w-full text-center mt-6">
-        <AuthLink text="Back to Sign In" to="/" size="xl" />
-      </div>
-    </form>
-  );
-}
-```
-
-## Add AWS Amplify with Auth/Cognito
-
-code: <https://github.com/gugazimmermann/amplify-login/tree/v0.6>
-
-To continue you will need a AWS Account, if you don’t have one just access this link and create:
-<https://portal.aws.amazon.com/billing/signup?redirect_url=https%3A%2F%2Faws.amazon.com%2Fregistration-confirmation#/start>
-
-With a AWS Account you'll need to install the Amplify CLI, you can follow the instructions here:
-<https://docs.amplify.aws/cli/start/install/>
-
-Now, to initialize the Amplify, in the root folder run `amplify init`, this will create the Amplify in the AWS Cloud.
-
-![Init](./readme-images/amplify-01.png)
-
-Run `amplify auth add` to create the Cognito and all the pools that will be used.
-
-Use the Manual Configuration, follow the image above and remember to add Locale in What attributes are required for signing up. This is important because this part of the configuration can’t be changed latter, and if you want multi-language (I’ll create a separate tutorial for it) it will be needed.
-
-![Auth](./readme-images/amplify-02.png)
-
-To send the changes to the cloud run `amplify push`.
-
-![Push](./readme-images/amplify-03.png)
-
-We need just one final touch, since we are using the Remember Me in the Sign In form, we need to update Cognito to accept it, this need to be done in the Cognito Console.
-
-Run `amplify auth console`, choose User Pool, and in the page select Sign-In Experience > Device Tracking > Edit > Select User Opt-In and save the changes. Now the user can choose to keep logged in.
-
-## Function Templates
-
-code: <https://github.com/gugazimmermann/amplify-login/tree/v0.7>
-
-We need to handle the form and create the functions to manage the login flow, but first let’s create  `src/pages/home/Home.jsx` so the user can be redirect after the login.
-
-```JS
-export default function Home() {
-  return (
-    <section className="h-screen mx-auto bg-white">
-      <div className="container h-full fixed">
-        Home
-      </div>
-    </section>
-  );
-}
-
-```
-
-We also need another component, a Alert, so the user can see some messages.
-
-`src/components/Alert.jsx`
-
-```JS
-const Alert = ({ type, text }) => (
-  <div
-    className={`my-2 text-center 
-    ${!text && "hidden"} ${
-      type === "error"
-        ? "text-red-600"
-        : type === "info"
-        ? "text-sky-600"
-        : "text-emerald-600"
-    }`}
-  >
-    <p>{text}</p>
-  </div>
-);
-
-export default Alert;
-
-```
-
-Change `src/pages/auth/AuthLayout.jsx` to have some functions templates:
-
-```JS
-import { useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { Alert, Loading } from "../../components";
+import { AppContext } from "../../context";
+import { LANGUAGES, ROUTES } from "../../constants";
+import Auth from "../../api/auth";
+import { Alert, Flags, Loading } from "../../components";
 
 export default function AuthLayout() {
   const navigate = useNavigate();
+  const { state } = useContext(AppContext);
   const [img, setImg] = useState();
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState();
-
   const startLoading = () => {
     setLoading(true);
     setAlert();
   };
-
   const stopLoading = () => {
     setLoading(false);
     setAlert();
   };
-
   const signIn = async (email, pwd, remember) => {
     startLoading();
-    stopLoading();
-    navigate("/home");
+    try {
+      await Auth.SignIn(email, pwd, remember);
+      stopLoading();
+      navigate(ROUTES[state.lang].HOME);
+    } catch (err) {
+      stopLoading();
+      setAlert({
+        type: "error",
+        text: LANGUAGES[state.lang].CommonError.Login,
+      });
+    }
   };
 
   const sendForgotPasswordCode = async (email) => {
     startLoading();
-    stopLoading();
-    navigate("/redefinepassword", {
-      state: { email, alert: { type: "info", text: "Check your Email" } },
-    });
+    try {
+      await Auth.ForgotPassword(email);
+      stopLoading();
+      navigate(ROUTES[state.lang].REDEFINE_PASSWORD, {
+        state: {
+          email,
+          alert: {
+            type: "info",
+            text: LANGUAGES[state.lang].Auth.ForgotPasswordSuccess,
+          },
+        },
+      });
+    } catch (err) {
+      stopLoading();
+      setAlert({
+        type: "error",
+        text: LANGUAGES[state.lang].CommonError.SendCode,
+      });
+    }
   };
-
-  const redefinePassword = async (email, code, pwd, repeat) => {
+  const redefinePassword = async (email, code, pwd) => {
     startLoading();
-    stopLoading();
-    navigate("/", { state: { email, alert: { type: "success", text: "Password changed successfully!" } } });
+    try {
+      await Auth.RedefinePassword(email, code, pwd);
+      stopLoading();
+      navigate(ROUTES[state.lang].SIGN_IN, {
+        state: {
+          email,
+          alert: {
+            type: "success",
+            text: LANGUAGES[state.lang].Auth.RedefinePasswordSuccess,
+          },
+        },
+      });
+    } catch (err) {
+      stopLoading();
+      setAlert({
+        type: "error",
+        text: LANGUAGES[state.lang].CommonError.RedefinePassword,
+      });
+    }
   };
-
-  const signUp = async (email, pwd, repeat) => {
+  const signUp = async (email, pwd) => {
     startLoading();
-    stopLoading();
-    navigate("/confirmsignup", { state: { email, alert: { type: "info", text: "Check your Email" } } });
+    try {
+      await Auth.SignUp(email, pwd, "en-US");
+      stopLoading();
+      navigate(ROUTES[state.lang].CONFIRM_SIGN_UP, {
+        state: {
+          email,
+          alert: {
+            type: "info",
+            text: LANGUAGES[state.lang].Auth.SignUpSuccess,
+          },
+        },
+      });
+    } catch (err) {
+      stopLoading();
+      setAlert({
+        type: "error",
+        text: LANGUAGES[state.lang].CommonError.SignUp,
+      });
+    }
   };
-
   const resendConfirmationCode = async (email) => {
     startLoading();
-    stopLoading();
-    navigate("/confirmsignup", { state: { email, resent: true } });
+    try {
+      await Auth.ResendConfirmationCode(email);
+      stopLoading();
+      navigate(ROUTES[state.lang].CONFIRM_SIGN_UP, {
+        state: {
+          email,
+          alert: {
+            type: "success",
+            text: LANGUAGES[state.lang].Auth.ResendConfirmationSuccess,
+          },
+        },
+      });
+    } catch (err) {
+      stopLoading();
+      setAlert({
+        type: "error",
+        text: LANGUAGES[state.lang].CommonError.SendCode,
+      });
+    }
   };
-
   const confirmSignUp = async (email, code) => {
     startLoading();
-    stopLoading();
-    navigate("/", { state: { email, alert: { type: "success", text: "Confirmation successful!" } } });
+    try {
+      await Auth.ConfirmSignUp(email, code);
+      stopLoading();
+      navigate(ROUTES[state.lang].SIGN_IN, {
+        state: {
+          email,
+          alert: {
+            type: "success",
+            text: LANGUAGES[state.lang].Auth.ConfirmRegistrationSuccess,
+          },
+        },
+      });
+    } catch (err) {
+      stopLoading();
+      setAlert({
+        type: "error",
+        text: LANGUAGES[state.lang].CommonError.ConfirmSignUp,
+      });
+    }
   };
-
+  const loadUser = async () => {
+    setLoading(true);
+    try {
+      await Auth.GetUser();
+      setLoading(false);
+      navigate(ROUTES[state.lang].HOME);
+    } catch (error) {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    loadUser();
+  }, []);
   return (
-    <section className="h-screen mx-auto bg-white">
+    <main className="h-screen mx-auto bg-white">
       {loading && <Loading />}
-      <div className="container h-full fixed">
+      <section className="container h-full fixed">
+        {Flags()}
         <div className="h-full flex flex-col-reverse md:flex-row items-center justify-evenly">
           <div className="w-10/12 md:w-6/12 lg:w-4/12 md:mb-0">
             {img && <img src={img} alt="SignUp" className="w-full" />}
@@ -973,182 +667,187 @@ export default function AuthLayout() {
             />
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </main>
   );
 }
 
 ```
 
-Now we have functions for every step of the Login Flow, and can also navigate to one page to another sending state and showing alerts when needed. The functions are passed to the Children pages using the Outlet Context.
-
-With this code we can change the other pages to use the functions. But first let’s create a helper to validate the email in the Front-End side, to avoid call Cognito with a invalid email.
-
-`src/helpers/isValidEmail.js`
-
-```JS
-const isValidEmail = (email) => {
-  return email.match(
-    /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-  );
-};
-
-export default isValidEmail;
-
-```
-
-`/src/helpers/index.js`
-
-```JS
-export { default as isValidEmail } from "./isValidEmail";
-
-```
-
-We can create a export file for the components too, to keep the import clean.
-
-`src/components/index.js`
-
-```JS
-export { default as Alert } from "./Alert";
-export { default as AuthButton } from "./AuthButton";
-export { default as AuthLink } from "./AuthLink";
-export { default as AuthTitle } from "./AuthTitle";
-export { default as Input } from "./Input";
-export { default as Loading } from "./Loading";
-export { default as RememberMe } from "./RememberMe";
-
-```
-
-And you can remember that Cognito have some rules for the password, and the user need to know it. So let’s change the Input component to show the hints. (we will also fix the show password icon that is inverted)
+And every auth component that have hard coded text or route need to be updated, and also the not found page:
 
 `src/components/Input.jsx`
 
 ```JS
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { AppContext } from "../context";
+import { LANGUAGES } from "../constants";
 
 const Input = ({ type, placeholder, value, handler, showTooltip }) => {
+  const { state } = useContext(AppContext);
   const [inputType, setInputType] = useState(type);
   const [tooltip, setTooltip] = useState(false);
 
-  function handleChangeInputType() {
-    if (inputType === "password") setInputType("text");
-    else if (inputType === "text") setInputType("password");
-  }
+...
+
+
+  <li>{LANGUAGES[state.lang].PasswordRules.Chars}</li>
+  <li>{LANGUAGES[state.lang].PasswordRules.Lowercase}</li>
+  <li>{LANGUAGES[state.lang].PasswordRules.Uppercase}</li>
+  <li>{LANGUAGES[state.lang].PasswordRules.Number}</li>
+  <li>{LANGUAGES[state.lang].PasswordRules.Symbol}</li>
+
+...
+
+```
+
+`src/components/Loading.jsx`
+
+```JS
+import { useContext } from "react";
+import { AppContext } from "../context";
+import { LANGUAGES } from "../constants";
+
+const Loading = () => {
+  const { state } = useContext(AppContext);
 
   return (
-    <div className="relative">
-      <input
-        type={inputType}
-        value={value}
-        onChange={(e) => handler(e.target.value)}
-        className=" block w-full px-4 py-2 font-normal border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:border-indigo-500 focus:outline-none"
-        placeholder={placeholder}
-      />
-      {type === "password" && (
-        <button
-          type="button"
-          onClick={() => handleChangeInputType()}
-          className="absolute top-1.5 right-1"
-        >
-          <i
-            className={`bx bx-${
-              inputType === "password" ? "hide" : "show"
-            } text-slate-400 text-2xl`}
-          />
-        </button>
-      )}
-      {showTooltip && (
-        <>
-          <button
-            type="button"
-            onMouseOver={() => setTooltip(true)}
-            onMouseLeave={() => setTooltip(false)}
-            className="absolute top-1.5 right-8"
-          >
-            <i className="bx bx-info-circle text-slate-400 text-2xl" />
-          </button>
-          <ul
-            className={`${
-              tooltip ? "flex" : "hidden"
-            } flex-col text-left absolute -right-8 top-2 -translate-y-full w-48 px-2 py-1 bg-gray-700 rounded-lg text-white text-sm`}
-          >
-            <li>Must have at least 8 chars</li>
-            <li>Requires Lowercase</li>
-            <li>Requires Uppercase</li>
-            <li>Requires Number</li>
-            <li>Requires Symbol</li>
-          </ul>
-        </>
-      )}
+    <div className="fixed inset-0 bg-gray-900 bg-opacity-90 overflow-y-auto h-full w-full z-50">
+      <div className="flex flex-col justify-center items-center h-full w-full">
+        <div className="mb-4 text-indigo-500 text-2xl font-bold">
+          {LANGUAGES[state.lang].Loading}...
+        </div>
+        <div className="animate-spin rounded-full h-32 w-32 border-b-8 border-indigo-500" />
+      </div>
     </div>
   );
 };
 
-export default Input;
+export default Loading;
 
 ```
 
-Finally change the Auth Pages.
-
-`src/pages/auth/SignIn.jsx`
+`src/components/RememberMe.jsx`
 
 ```JS
-import { useEffect, useState } from "react";
+import { useContext } from "react";
+import { AppContext } from "../context";
+import { LANGUAGES } from "../constants";
+
+const RememberMe = ({ remember, setRemember }) => {
+  const { state } = useContext(AppContext);
+
+  return (
+    <div className="form-group form-check">
+      <input
+        type="checkbox"
+        name="checkbox"
+        id="checkbox"
+        defaultChecked={remember}
+        onChange={() => setRemember(!remember)}
+        className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-indigo-500 checked:border-indigo-500 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+      />
+      <label className="form-check-label inline-block" htmlFor="checkbox">
+        {LANGUAGES[state.lang].Auth.RememberMe}
+      </label>
+    </div>
+  );
+};
+
+export default RememberMe;
+
+```
+
+`src/pages/not-found/NotFound.jsx`
+
+```JS
+import { useContext } from "react";
+import { AppContext } from "../../context";
+import { LANGUAGES } from "../../constants";
+import NotFoundImg from "../../images/not_found.svg";
+
+const NotFound = () => {
+  const { state } = useContext(AppContext);
+
+  return (
+    <div className="container bg-white mx-auto">
+      <main className="flex flex-col h-screen justify-center items-center">
+        <img src={NotFoundImg} alt="not found" className="max-w-xs" />
+        <h1 className="mt-4 text-xl">
+          {LANGUAGES[state.lang].NotFound.Sorry},{" "}
+          {LANGUAGES[state.lang].NotFound.PageNotFound}.
+        </h1>
+      </main>
+    </div>
+  );
+};
+
+export default NotFound;
+
+```
+
+And the same for the auth pages:
+
+`src/pages/auth/ConfirmSignUp.jsx`
+
+```JS
+import { useEffect, useState, useContext } from "react";
 import { useOutletContext, useLocation } from "react-router-dom";
+import { AppContext } from "../../context";
+import { LANGUAGES, ROUTES } from "../../constants";
 import { isValidEmail } from "../../helpers";
-import {
-  AuthButton,
-  AuthLink,
-  AuthTitle,
-  Input,
-  RememberMe,
-} from "../../components";
-import SignInImage from "../../images/signin.svg";
+import { AuthLink, AuthTitle, Button, Input } from "../../components";
+import ConfirmSignUpImage from "../../images/confirm_signup.svg";
 
-export default function SignIn() {
+export default function ConfirmSignUp() {
   const location = useLocation();
-  const { setImg, setAlert, signIn } = useOutletContext();
+  const { state } = useContext(AppContext);
+  const { setImg, setAlert, resendConfirmationCode, confirmSignUp } =
+    useOutletContext();
   const [email, setEmail] = useState(location?.state?.email || "");
-  const [pwd, setPwd] = useState("");
-  const [remember, setRemember] = useState(false);
-
+  const [code, setCode] = useState("");
   useEffect(() => {
-    setImg(SignInImage);
+    setImg(ConfirmSignUpImage);
     setAlert(location?.state?.alert);
   }, [location?.state?.alert, setAlert, setImg]);
-
-  const disabled = () => email === "" || !isValidEmail(email) || pwd === "";
+  const disabled = () =>
+    email === "" || !isValidEmail(email) || code === "" || code.length < 6;
 
   return (
     <form>
-      <AuthTitle text="sign in" />
+      <AuthTitle text={LANGUAGES[state.lang].Auth.ConfirmRegistrationTitle} />
       <div className="mb-4">
         <Input
           type="email"
-          placeholder="Email"
+          placeholder={LANGUAGES[state.lang].Email}
           value={email}
           handler={setEmail}
         />
       </div>
       <div className="mb-4">
         <Input
-          type="password"
-          placeholder="Password"
-          value={pwd}
-          handler={setPwd}
+          type="text"
+          placeholder={LANGUAGES[state.lang].Code}
+          value={code}
+          handler={setCode}
         />
       </div>
-      <div className="flex justify-between items-center mb-4">
-        <RememberMe remember={remember} setRemember={setRemember} />
-        <AuthLink to="/forgorpassword" text="Forgot Password?" />
+      <div className="mb-4 flex justify-end text-indigo-500 hover:text-amber-500 duration-200 transition ease-in-out">
+        <button type="button" onClick={() => resendConfirmationCode(email)}>
+          {LANGUAGES[state.lang].Auth.ResendConfirmationCode}
+        </button>
       </div>
-      <AuthButton
-        text="Sign In"
+      <Button
+        text={LANGUAGES[state.lang].Auth.ConfirmRegistrationButton}
         disabled={disabled()}
-        handler={() => signIn(email, pwd, remember)}
+        handler={() => confirmSignUp(email, code)}
       />
       <div className="w-full text-center mt-6">
-        <AuthLink to="/signup" text="Not registered?" size="xl" />
+        <AuthLink
+          text={LANGUAGES[state.lang].Auth.BackToSignIn}
+          to={ROUTES[state.lang].SIGN_IN}
+          size="xl"
+        />
       </div>
     </form>
   );
@@ -1158,13 +857,16 @@ export default function SignIn() {
 `src/pages/auth/ForgotPassword.jsx`
 
 ```JS
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useOutletContext } from "react-router-dom";
+import { AppContext } from "../../context";
+import { LANGUAGES, ROUTES } from "../../constants";
 import { isValidEmail } from "../../helpers";
-import { AuthButton, AuthLink, AuthTitle, Input } from "../../components";
+import { AuthLink, AuthTitle, Button, Input } from "../../components";
 import ForgorPasswordImage from "../../images/forgor_password.svg";
 
 export default function ForgorPassword() {
+  const { state } = useContext(AppContext);
   const { setImg, setAlert, sendForgotPasswordCode } = useOutletContext();
   const [email, setEmail] = useState("");
 
@@ -1172,82 +874,92 @@ export default function ForgorPassword() {
     setImg(ForgorPasswordImage);
     setAlert();
   }, [setAlert, setImg]);
-
   const disabled = () => email === "" || !isValidEmail(email);
 
   return (
     <form>
-      <AuthTitle text="forgot password" />
+      <AuthTitle text={LANGUAGES[state.lang].Auth.ForgotPasswordTitle} />
       <div className="mb-4">
         <Input
           type="email"
-          placeholder="Email"
+          placeholder={LANGUAGES[state.lang].Email}
           value={email}
           handler={setEmail}
         />
       </div>
-      <AuthButton
-        text="Send Code"
+      <Button
+        text={LANGUAGES[state.lang].Auth.SendCode}
         disabled={disabled()}
         handler={() => sendForgotPasswordCode(email)}
       />
       <div className="w-full text-center mt-6">
-        <AuthLink text="Back to Sign In" to="/" size="xl" />
+        <AuthLink
+          text={LANGUAGES[state.lang].Auth.BackToSignIn}
+          to={ROUTES[state.lang].SIGN_IN}
+          size="xl"
+        />
       </div>
     </form>
   );
 }
+
 ```
 
 `src/pages/auth/RedefinePassword.jsx`
 
 ```JS
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useOutletContext, useLocation } from "react-router-dom";
+import { AppContext } from "../../context";
+import { LANGUAGES, ROUTES } from "../../constants";
 import { isValidEmail } from "../../helpers";
-import { AuthButton, AuthLink, AuthTitle, Input } from "../../components";
+import { AuthLink, AuthTitle, Button, Input } from "../../components";
 import RedefinePasswordImage from "../../images/redefine_password.svg";
 
 export default function RedefinePassword() {
   const location = useLocation();
+  const { state } = useContext(AppContext);
   const { setImg, setAlert, redefinePassword } = useOutletContext();
   const [email, setEmail] = useState(location?.state?.email || "");
   const [code, setCode] = useState("");
   const [pwd, setPwd] = useState("");
   const [repeat, setRepeat] = useState("");
-
   useEffect(() => {
     setImg(RedefinePasswordImage);
     setAlert(location?.state?.alert);
   }, [location?.state?.alert, setAlert, setImg]);
-
   const disabled = () =>
     email === "" ||
     !isValidEmail(email) ||
     code === "" ||
-    code.length < 4 ||
+    code.length < 6 ||
     pwd === "" ||
     repeat === "" ||
     pwd !== repeat;
 
   return (
     <form>
-      <AuthTitle text="redefine password" />
+      <AuthTitle text={LANGUAGES[state.lang].Auth.RedefinePasswordTitle} />
       <div className="mb-4">
         <Input
           type="email"
-          placeholder="Email"
+          placeholder={LANGUAGES[state.lang].Email}
           value={email}
           handler={setEmail}
         />
       </div>
       <div className="mb-4">
-        <Input type="text" placeholder="Code" value={code} handler={setCode} />
+        <Input
+          type="text"
+          placeholder={LANGUAGES[state.lang].Code}
+          value={code}
+          handler={setCode}
+        />
       </div>
       <div className="mb-4">
         <Input
           type="password"
-          placeholder="Password"
+          placeholder={LANGUAGES[state.lang].Password}
           value={pwd}
           handler={setPwd}
           showTooltip
@@ -1256,18 +968,89 @@ export default function RedefinePassword() {
       <div className="mb-4">
         <Input
           type="password"
-          placeholder="Repeat Password"
+          placeholder={LANGUAGES[state.lang].Auth.RepeatPassword}
           value={repeat}
           handler={setRepeat}
         />
       </div>
-      <AuthButton
-        text="Redefine Password"
+      <Button
+        text={LANGUAGES[state.lang].Auth.RedefinePasswordButton}
         disabled={disabled()}
         handler={() => redefinePassword(email, code, pwd, repeat)}
       />
       <div className="w-full text-center mt-6">
-        <AuthLink text="Back to Sign In" to="/" size="xl" />
+        <AuthLink
+          text={LANGUAGES[state.lang].Auth.BackToSignIn}
+          to={ROUTES[state.lang].SIGN_IN}
+          size="xl"
+        />
+      </div>
+    </form>
+  );
+}
+```
+
+`src/pages/auth/SignIn.jsx`
+
+```JS
+import { useEffect, useState, useContext } from "react";
+import { useOutletContext, useLocation } from "react-router-dom";
+import { AppContext } from "../../context";
+import { LANGUAGES, ROUTES } from "../../constants";
+import { isValidEmail } from "../../helpers";
+import { AuthLink, AuthTitle, Button, Input, RememberMe } from "../../components";
+import SignInImage from "../../images/signin.svg";
+
+export default function SignIn() {
+  const location = useLocation();
+  const { state } = useContext(AppContext);
+  const { setImg, setAlert, signIn } = useOutletContext();
+  const [email, setEmail] = useState(location?.state?.email || "");
+  const [pwd, setPwd] = useState("");
+  const [remember, setRemember] = useState(false);
+  useEffect(() => {
+    setImg(SignInImage);
+    setAlert(location?.state?.alert);
+  }, [location?.state?.alert, setAlert, setImg]);
+  const disabled = () => email === "" || !isValidEmail(email) || pwd === "";
+
+  return (
+    <form>
+      <AuthTitle text={LANGUAGES[state.lang].Auth.SignInTitle} />
+      <div className="mb-4">
+        <Input
+          type="email"
+          placeholder={LANGUAGES[state.lang].Email}
+          value={email}
+          handler={setEmail}
+        />
+      </div>
+      <div className="mb-4">
+        <Input
+          type="password"
+          placeholder={LANGUAGES[state.lang].Password}
+          value={pwd}
+          handler={setPwd}
+        />
+      </div>
+      <div className="flex justify-between items-center mb-4">
+        <RememberMe remember={remember} setRemember={setRemember} />
+        <AuthLink
+          to={ROUTES[state.lang].FORGOT_PASSWORD}
+          text={LANGUAGES[state.lang].Auth.ForgotPassword}
+        />
+      </div>
+      <Button
+        text={LANGUAGES[state.lang].Auth.SignInButton}
+        disabled={disabled()}
+        handler={() => signIn(email, pwd, remember)}
+      />
+      <div className="w-full text-center mt-6">
+        <AuthLink
+          to={ROUTES[state.lang].SIGN_UP}
+          text={LANGUAGES[state.lang].Auth.NotRegistered}
+          size="xl"
+        />
       </div>
     </form>
   );
@@ -1277,13 +1060,16 @@ export default function RedefinePassword() {
 `src/pages/auth/SignUp.jsx`
 
 ```JS
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useOutletContext } from "react-router-dom";
+import { AppContext } from "../../context";
+import { LANGUAGES, ROUTES } from "../../constants";
 import { isValidEmail } from "../../helpers";
-import { AuthButton, AuthLink, AuthTitle, Input } from "../../components";
+import { AuthLink, AuthTitle, Button, Input } from "../../components";
 import SignUpImage from "../../images/signup.svg";
 
 export default function SignUp() {
+  const { state } = useContext(AppContext);
   const { setImg, setAlert, signUp } = useOutletContext();
   const [email, setEmail] = useState("");
   const [pwd, setPwd] = useState("");
@@ -1303,11 +1089,11 @@ export default function SignUp() {
 
   return (
     <form>
-      <AuthTitle text="sign up" />
+      <AuthTitle text={LANGUAGES[state.lang].Auth.SignUpTitle} />
       <div className="mb-4">
         <Input
           type="email"
-          placeholder="Email"
+          placeholder={LANGUAGES[state.lang].Email}
           value={email}
           handler={setEmail}
         />
@@ -1315,7 +1101,7 @@ export default function SignUp() {
       <div className="mb-4">
         <Input
           type="password"
-          placeholder="Password"
+          placeholder={LANGUAGES[state.lang].Password}
           value={pwd}
           handler={setPwd}
           showTooltip
@@ -1324,139 +1110,40 @@ export default function SignUp() {
       <div className="mb-4">
         <Input
           type="password"
-          placeholder="Repeat the Password"
+          placeholder={LANGUAGES[state.lang].Auth.RepeatPassword}
           value={repeat}
           handler={setRepeat}
         />
       </div>
-      <AuthButton
-        text="Sign Up"
+      <Button
+        text={LANGUAGES[state.lang].Auth.SignUpButton}
         disabled={disabled()}
         handler={() => signUp(email, pwd, repeat)}
       />
       <div className="w-full text-center mt-6">
-        <AuthLink text="Back to Sign In" to="/" size="xl" />
-      </div>
-    </form>
-  );
-}
-```
-
-`src/pages/auth/ConfirmSignUp.jsx`
-
-```JS
-import { useEffect, useState } from "react";
-import { useOutletContext, useLocation } from "react-router-dom";
-import { isValidEmail } from "../../helpers";
-import { AuthButton, AuthLink, AuthTitle, Input } from "../../components";
-import ConfirmSignUpImage from "../../images/confirm_signup.svg";
-
-export default function ConfirmSignUp() {
-  const location = useLocation();
-  const { setImg, setAlert, confirmSignUp } = useOutletContext();
-  const [email, setEmail] = useState(location?.state?.email || "");
-  const [code, setCode] = useState("");
-
-  useEffect(() => {
-    setImg(ConfirmSignUpImage);
-    setAlert(location?.state?.alert);
-  }, [location?.state?.alert, setAlert, setImg]);
-
-  const disabled = () =>
-    email === "" || !isValidEmail(email) || code === "" || code.length < 4;
-
-  return (
-    <form>
-      <AuthTitle text="confirm registration" />
-      <div className="mb-4">
-        <Input
-          type="email"
-          placeholder="Email"
-          value={email}
-          handler={setEmail}
+        <AuthLink
+          text={LANGUAGES[state.lang].Auth.BackToSignIn}
+          to={ROUTES[state.lang].SIGN_IN}
+          size="xl"
         />
       </div>
-      <div className="mb-4">
-        <Input type="text" placeholder="Code" value={code} handler={setCode} />
-      </div>
-      <AuthButton
-        text="Confim"
-        disabled={disabled()}
-        handler={() => confirmSignUp(email, code)}
-      />
-      <div className="w-full text-center mt-6">
-        <AuthLink text="Back to Sign In" to="/" size="xl" />
-      </div>
     </form>
   );
 }
 ```
 
-## AWS Amplify Auth Functions
+## Profile Page
 
-code: <https://github.com/gugazimmermann/amplify-login/tree/v0.8>
+Code: <https://github.com/gugazimmermann/amplify-login/tree/v1.3>
 
-To initialize the amplify inside the react app we need to run `npm install aws-amplify` and change `src/index.js`.
+We have done all the job for the app to have dynamic language using the state before the user authenticate, but now we need to remember the choosen language and translate de app after the authentication. In part 1 we send the locale hard coded, now we have a way to know the language.
 
-```JS
-import { Amplify } from 'aws-amplify';
-import awsconfig from './aws-exports';
-```
-
-after `import { BrowserRouter } from "react-router-dom";` and add `Amplify.configure(awsconfig);` after `import reportWebVitals from './reportWebVitals';`
-
-`src/index.js`
-
-```JS
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from "react-router-dom";
-import { Amplify } from 'aws-amplify';
-import awsconfig from './aws-exports';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-
-Amplify.configure(awsconfig);
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </React.StrictMode>
-);
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
-
-```
-
-Create all the AWS Amplify Auth (Cognito) functions in a separated file, in case we decide to change the Auth provider to another one, like Google or Auth0, in the future.
+But first let's change the SignIn function to return the cognito user object, because we will need to know the language of the user to change the HOME route..
 
 `src/api/auth.js`
 
 ```JS
-import { Auth as AmplifyAuth } from "aws-amplify";
-
-const SignUp = async (email, password, locale) => {
-  await AmplifyAuth.signUp({
-    username: email,
-    password,
-    attributes: { email, locale },
-  });
-};
-
-const ResendConfirmationCode = async (email) => {
-  await AmplifyAuth.resendSignUp(email);
-};
-
-const ConfirmSignUp = async (email, code) => {
-  await AmplifyAuth.confirmSignUp(email, code);
-};
+...
 
 const SignIn = async (email, pwd, remember) => {
   const auth = await AmplifyAuth.signIn(email, pwd);
@@ -1464,440 +1151,133 @@ const SignIn = async (email, pwd, remember) => {
     await AmplifyAuth.completeNewPassword(auth, pwd);
   if (remember) await AmplifyAuth.rememberDevice();
   else await AmplifyAuth.forgetDevice();
+  return auth;
 };
 
-const ForgotPassword = async (email) => {
-  await AmplifyAuth.forgotPassword(email);
-};
+...
+```
 
-const RedefinePassword = async (email, code, pwd) => {
-  await AmplifyAuth.forgotPasswordSubmit(email, code, pwd);
-};
+in `src/pages/auth/AuthLayout.jsx` we will send with the SignUp the language, then when the user SignIn dispatch to the context the user languange, and send to the right HOME route.
 
-const GetUser = async () => {
-  const { attributes } = await AmplifyAuth.currentAuthenticatedUser();
-  return attributes;
-};
+```JS
+...
 
-const SignOut = async () => {
-  await AmplifyAuth.signOut({ global: true });
-};
+import { LANGUAGES, ROUTES, TYPES } from "../../constants";
 
-const Auth = {
-  SignUp,
-  ResendConfirmationCode,
-  ConfirmSignUp,
-  SignIn,
-  ForgotPassword,
-  RedefinePassword,
-  GetUser,
-  SignOut,
-};
+...
 
-export default Auth;
+const { state, dispatch } = useContext(AppContext);
+
+...
+
+const signIn = async (email, pwd, remember) => {
+    startLoading();
+    try {
+      const { attributes } = await Auth.SignIn(email, pwd, remember);
+      dispatch({ type: TYPES.UPDATE_LANG, payload: attributes.locale });
+      stopLoading();
+      navigate(ROUTES[attributes.locale].HOME);
+    }
+    const signIn = async (email, pwd, remember) => {
+    startLoading();
+    try {
+      const { attributes } = await Auth.SignIn(email, pwd, remember);
+      dispatch({ type: TYPES.UPDATE_LANG, payload: attributes.locale });
+      stopLoading();
+      navigate(ROUTES[attributes.locale].HOME);
+
+...
+
+const signUp = async (email, pwd) => {
+    startLoading();
+    try {
+      await Auth.SignUp(email, pwd, state.lang);
+...
 
 ```
 
-Change `src/pages/auth/AuthLayout.jsx` to use the functions:
+Ok, now the user has logged in with the right language, we need to change the authenticated layout (private routes) to handle it, and also the Nav Menu:
+
+`src/pages/home/Layout.jsx`
 
 ```JS
-import { useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+import { AppContext } from "../../context";
+import { ROUTES, TYPES } from "../../constants";
 import Auth from "../../api/auth";
-import { Alert, Loading } from "../../components";
-
-export default function AuthLayout() {
-  const navigate = useNavigate();
-  const [img, setImg] = useState();
-  const [loading, setLoading] = useState(false);
-  const [alert, setAlert] = useState();
-
-  const startLoading = () => {
-    setLoading(true);
-    setAlert();
-  };
-
-  const stopLoading = () => {
-    setLoading(false);
-    setAlert();
-  };
-
-  const signIn = async (email, pwd, remember) => {
-    startLoading();
-    try {
-      await Auth.SignIn(email, pwd, remember);
-      stopLoading();
-      navigate("/home");
-    } catch (err) {
-      stopLoading();
-      setAlert({ type: "error", text: "Sorry, Unable to login" });
-    }
-  };
-
-  const sendForgotPasswordCode = async (email) => {
-    startLoading();
-    try {
-      await Auth.ForgotPassword(email);
-      stopLoading();
-      navigate("/redefinepassword", {
-        state: { email, alert: { type: "info", text: "Check your Email" } },
-      });
-    } catch (err) {
-      stopLoading();
-      setAlert({
-        type: "error",
-        text: "Unable to send code, email is correct?",
-      });
-    }
-  };
-
-  const redefinePassword = async (email, code, pwd) => {
-    startLoading();
-    try {
-      await Auth.RedefinePassword(email, code, pwd);
-      stopLoading();
-      navigate("/", {
-        state: {
-          email,
-          alert: { type: "success", text: "Password changed successfully!" },
-        },
-      });
-    } catch (err) {
-      stopLoading();
-      setAlert({
-        type: "error",
-        text: "Unable to redifine password, email, code or new password are wrong!",
-      });
-    }
-  };
-
-  const signUp = async (email, pwd) => {
-    startLoading();
-    try {
-      await Auth.SignUp(email, pwd, "en-US");
-      stopLoading();
-      navigate("/confirmsignup", {
-        state: { email, alert: { type: "info", text: "Check your Email" } },
-      });
-    } catch (err) {
-      stopLoading();
-      setAlert({
-        type: "error",
-        text: "Unable to Register, email, code or new password are wrong!",
-      });
-    }
-  };
-
-  const resendConfirmationCode = async (email) => {
-    startLoading();
-    try {
-      await Auth.ResendConfirmationCode(email);
-      stopLoading();
-      navigate("/confirmsignup", {
-        state: {
-          email,
-          alert: { type: "success", text: "Code Resent, Check your Email" },
-        },
-      });
-    } catch (err) {
-      stopLoading();
-      setAlert({
-        type: "error",
-        text: "Unable to send code, email is correct?",
-      });
-    }
-  };
-
-  const confirmSignUp = async (email, code) => {
-    startLoading();
-    try {
-      await Auth.ConfirmSignUp(email, code);
-      stopLoading();
-      navigate("/", {
-        state: {
-          email,
-          alert: { type: "success", text: "Confirmation successful!" },
-        },
-      });
-    } catch (err) {
-      stopLoading();
-      setAlert({
-        type: "error",
-        text: "Unable to confirm registration, email or code are wrong!",
-      });
-    }
-  };
-
-  return (
-    <section className="h-screen mx-auto bg-white">
-      {loading && <Loading />}
-      <div className="container h-full fixed">
-        <div className="h-full flex flex-col-reverse md:flex-row items-center justify-evenly">
-          <div className="w-10/12 md:w-6/12 lg:w-4/12 md:mb-0">
-            {img && <img src={img} alt="SignUp" className="w-full" />}
-          </div>
-          <div className="w-10/12 md:w-5/12 lg:w-4/12">
-            <Alert type={alert?.type} text={alert?.text} />
-            <Outlet
-              context={{
-                setImg,
-                setAlert,
-                signIn,
-                sendForgotPasswordCode,
-                redefinePassword,
-                signUp,
-                resendConfirmationCode,
-                confirmSignUp,
-              }}
-            />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-```
-
-You can see that in the Sign Up we are sending “*en-US*”, this is the locale that in the future we will need.
-You can now test the Auth flow, creating a new user, receiving the code in the email, confirm the code, ask for a code to change the password and finally Sign In.
-
-But if the user lost the code? We can handle it in `src/pages/auth/ConfirmSignUp.jsx`
-
-```JS
-import { useEffect, useState } from "react";
-import { useOutletContext, useLocation } from "react-router-dom";
-import { isValidEmail } from "../../helpers";
-import { AuthButton, AuthLink, AuthTitle, Input } from "../../components";
-import ConfirmSignUpImage from "../../images/confirm_signup.svg";
-
-export default function ConfirmSignUp() {
-  const location = useLocation();
-  const { setImg, setAlert, resendConfirmationCode, confirmSignUp } =
-    useOutletContext();
-  const [email, setEmail] = useState(location?.state?.email || "");
-  const [code, setCode] = useState("");
-
-  useEffect(() => {
-    setImg(ConfirmSignUpImage);
-    setAlert(location?.state?.alert);
-  }, [location?.state?.alert, setAlert, setImg]);
-
-  const disabled = () =>
-    email === "" || !isValidEmail(email) || code === "" || code.length < 6;
-
-  return (
-    <form>
-      <AuthTitle text="confirm registration" />
-      <div className="mb-4">
-        <Input
-          type="email"
-          placeholder="Email"
-          value={email}
-          handler={setEmail}
-        />
-      </div>
-      <div className="mb-4">
-        <Input type="text" placeholder="Code" value={code} handler={setCode} />
-      </div>
-      <div className="mb-4 flex justify-end text-indigo-500 hover:text-amber-500 duration-200 transition ease-in-out">
-        <button
-          type="button"
-          onClick={() => resendConfirmationCode(email)}
-        >
-          Resend Confirmation Code
-        </button>
-      </div>
-      <AuthButton
-        text="Confim"
-        disabled={disabled()}
-        handler={() => confirmSignUp(email, code)}
-      />
-      <div className="w-full text-center mt-6">
-        <AuthLink text="Back to Sign In" to="/" size="xl" />
-      </div>
-    </form>
-  );
-}
-
-```
-
-And now change the Home to show user info and add a sign out button. Let’s create a Layout for authenticated users `src/pages/home/Layout.jsx`
-
-```JS
-import { useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
-import Auth from "../../api/auth";
-import { Loading } from "../../components";
-import Nav from './Nav';
-
+import { Loading, Nav } from "../../components";
 export default function Layout() {
+  const { state, dispatch } = useContext(AppContext);
   const navigate = useNavigate();
   const [user, setUser] = useState();
   const [loading, setLoading] = useState(false);
-
-  const loadUser = async () => {
-    setLoading(true);
-    setUser(await Auth.GetUser());
-    setLoading(false);
+  const loadUser = async (force) => {
+    if (!user || force === true) {
+      setLoading(true);
+      try {
+        const attributes = await Auth.GetUser();
+        setUser(attributes);
+        dispatch({ type: TYPES.UPDATE_LANG, payload: attributes.locale });
+        setLoading(false);
+      } catch (error) {
+        navigate(ROUTES[state.lang].SIGN_IN);
+      }
+    }
   };
-  
   const handleSignOut = async () => {
     await Auth.SignOut();
-    navigate('/');
-  }
-
+    navigate(ROUTES[state.lang].SIGN_IN);
+  };
   useEffect(() => {
     loadUser();
   }, []);
 
+  if (!user) return <Loading />
+
   return (
     <main className="mx-auto h-screen">
       {loading && <Loading />}
-      <Nav handleSignOut={handleSignOut} />
+      <Nav user={user} handleSignOut={handleSignOut} />
       <div className="mx-auto max-w-screen-lg p-4">
-        <Outlet context={{ user }} />
+        <Outlet context={{ user, loadUser, setLoading }} />
       </div>
     </main>
   );
 }
-```
-
-and a Nav Bar `src/pages/home/Nav.jsx`
-
-```JS
-export default function Nav({ handleSignOut }) {
-  return (
-    <nav className="w-full shadow-md z-30 px-2 py-1.5 bg-white text-slate-500">
-      <div className="container mx-auto flex flex-wrap justify-between px-2">
-        <p className="text-2xl">{process.env.REACT_APP_TITLE}</p>
-        <button type="button" onClick={() => handleSignOut()}>Sign Out</button>
-      </div>
-    </nav>
-  );
-}
-```
-
-Change the Home page to show the user info `src/pages/home/Home.jsx`
-
-```JS
-import { useOutletContext } from "react-router-dom";
-
-export default function Home() {
-  const { user } = useOutletContext();
-
-  return <main>{user && <pre>{JSON.stringify(user, undefined, 2)}</pre>}</main>;
-}
 
 ```
-
-So, now the Layout will handle the user info and Sign Out, and use the Router Context to pass to the Children pages.
-
-## User Profile
-
-code: <https://github.com/gugazimmermann/amplify-login/tree/v0.9>
-
-One thing that is good to know when using the AWS Amplify Auth is how to delete a user. Sometimes when developing we need to do it.
-
-You can run `amplify auth console` and go to *Users*, click the user you want and then in *Actions*, *Disable User Access*, then back in the *Users*, select and click *Delete User*.
-
-But you can also use the **Amplify Console**. First time you will need to run `amplify console` and access the *AWS Console*, go to *Amplify* and *Enable Amplify Studio*. After that you can run `amplify console` and open the amplify studio, go to **User Management** and see all the users there.
-
-The login is already working, but what happens if the user want to change the password or the email? Let’s create a profile page to do it.
-
-First we will change the Nav bar to have a nice user avatar and a menu. The menu will open when the user clicks it, but need to close if the user clicks outside, so we need to create a React Hook to control it.
-
-`src/helpers/useCloseModal.js`
-
-```JS
-import { useEffect, useRef } from "react";
-
-const useCloseModal = (open, setOpen) => {
-  const ref = useRef(null);
-  
-  useEffect(() => {
-    const checkIfClickedOutside = (e) => {
-      if (open && ref.current && !ref.current.contains(e.target))
-        setOpen(false);
-    };
-    document.addEventListener("mousedown", checkIfClickedOutside);
-    return () =>
-      document.removeEventListener("mousedown", checkIfClickedOutside);
-  }, [open, setOpen]);
-  return ref;
-};
-
-export default useCloseModal;
-
-```
-
-and add in the export index `src/helpers/index.js`
-
-```JS
-export { default as isValidEmail } from "./isValidEmail";
-export { default as useCloseModal } from "./useCloseModal";
-
-```
-
-We will move the Nav to components, simple because the Nav is not a page, and we will also fix some HTML tags, and other parts of the code.
-
-`src/pages/auth/ConfirmSignUp.jsx` and `src/pages/auth/RedefinePassword.jsx` change to `code.length < 6`.
-
-`src/pages/auth/AuthLayout.jsx` fix the HTML tags
-
-```JS
-...
-return (
-    <main className="h-screen mx-auto bg-white">
-      {loading && <Loading />}
-      <section className="container h-full fixed">
-...
-      </section>
-    </main>
-  );
-...
-```
-
-and in `src/pages/home/Home.jsx` change `main` to `section`.
-
-In `src/components/Alert.jsx` change the color, to keep all the same in the app, change `sky` to `indigo`.
-
-Now change Nav to components, and delete `src/pages/home/Nav.jsx`
 
 `src/components/Nav.jsx`
 
 ```JS
-import { NavProfile } from ".";
+...
 
-const Nav = ({ handleSignOut }) => (
-  <header className="w-full shadow-md z-30 px-2 py-1.5 bg-white text-slate-500">
-    <div className="container mx-auto flex flex-wrap justify-between px-2">
-      <p className="text-2xl">{process.env.REACT_APP_TITLE}</p>
-      <NavProfile handleSignOut={handleSignOut} />
-    </div>
-  </header>
-);
+const Nav = ({ user, handleSignOut }) => (
 
-export default Nav;
+...
+
+<NavProfile user={user} handleSignOut={handleSignOut} />
+
+...
 
 ```
 
-Create the `src/components/NavProfile.jsx`
+`src/components/NavProfile.jsx`
 
 ```JS
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { LANGUAGES, ROUTES } from "../constants";
 import { useCloseModal } from "../helpers";
 
-const NavProfile = ({ handleSignOut }) => {
+const NavProfile = ({ user, handleSignOut }) => {
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const ref = useCloseModal(open, setOpen);
-
   useEffect(() => {
     setOpen(false);
   }, [location]);
-
   const renderProfileMenu = () => (
     <ul
       ref={ref}
@@ -1906,16 +1286,17 @@ const NavProfile = ({ handleSignOut }) => {
       } list-style-none w-48 right-0 top-9 border bg-white z-50`}
     >
       <li className="p-2 text-center">
-        <Link to="/profile">Profile</Link>
+        <Link to={ROUTES[user.locale].PROFILE}>
+          {LANGUAGES[user.locale].Profile.Profile}
+        </Link>
       </li>
       <li className="p-2 text-center">
         <button type="button" onClick={() => handleSignOut()}>
-          Sign Out
+          {LANGUAGES[user.locale].Profile.SignOut}
         </button>
       </li>
     </ul>
   );
-
   return (
     <div className="relative">
       <button
@@ -1932,110 +1313,79 @@ const NavProfile = ({ handleSignOut }) => {
     </div>
   );
 };
-
 export default NavProfile;
 
 ```
 
-Another component that we need to create is `src/components/Form.jsx`, just to not repeat every time.
+And what's happen if the user decide to change the language after Sign Up? This can be done in the Profile page, but first we need to create the function in the Auth API.
+
+`src/api/auth.js`
 
 ```JS
-const Form = ({ children }) => (
-  <form className="w-full flex flex-wrap bg-white p-4 mb-4 mt-4 rounded-md shadow-md">
-    {children}
-  </form>
-);
 
-export default Form;
-
-```
-
-We have named the Button before as `src/components/AuthButton.jsx`, but we will reuse it in the profile page, so just rename to `src/components/Button.jsx`. Don’t forgot to fix the import in `src/pages/auth/ConfirmSignUp.jsx`, `src/pages/auth/ForgotPassword.jsx`, `src/pages/auth/RedefinePassword.jsx`, `src/pages/auth/SignIn.jsx` and `src/pages/auth/SignUp.jsx`.
-
-```JS
-import { AuthLink, AuthTitle, Button, Input } from "../../components";
-```
-
-Now you can change the `src/pages/home/Layout.jsx` to have the Nav, and algo change the `loadUser` function to force the reload when the user change the email.
-
-```JS
 ...
-import { Loading, Nav } from "../../components";
-...
-  const loadUser = async (force) => {
-    if (!user || force === true) {
-      setLoading(true);
-      setUser(await Auth.GetUser());
-      setLoading(false);
-    }
-  };
-...
-  return (
-    <main className="mx-auto h-screen">
-      {loading && <Loading />}
-      <Nav handleSignOut={handleSignOut} />
-      <div className="mx-auto max-w-screen-lg p-4">
-        <Outlet context={{ user, loadUser , setLoading}} />
-      </div>
-    </main>
-  );
-...
-```
 
-We need to add the Profile page route in `src/App.js`
-
-```JS
-import { lazy, Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
-import { Loading } from "./components";
-
-const NotFound = lazy(() => import("./pages/not-found/NotFound"));
-const AuthLayout = lazy(() => import("./pages/auth/AuthLayout"));
-const SignIn = lazy(() => import("./pages/auth/SignIn"));
-const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"));
-const RedefinePassword = lazy(() => import("./pages/auth/RedefinePassword"));
-const SignUp = lazy(() => import("./pages/auth/SignUp"));
-const ConfirmSignUp = lazy(() => import("./pages/auth/ConfirmSignUp"));
-
-const Layout = lazy(() => import("./pages/home/Layout"));
-const Home = lazy(() => import("./pages/home/Home"));
-const Profile = lazy(() => import("./pages/home/Profile"));
-
-function App() {
-  return (
-    <Suspense fallback={<Loading />}>
-      <Routes>
-        <Route element={<AuthLayout />}>
-          <Route path="/" element={<SignIn />} />
-          <Route path="/forgorpassword" element={<ForgotPassword />} />
-          <Route path="/redefinepassword" element={<RedefinePassword />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/confirmsignup" element={<ConfirmSignUp />} />
-        </Route>
-        <Route element={<Layout />}>
-          <Route path="/home" element={<Home />} />
-          <Route path="/profile" element={<Profile />} />
-        </Route>
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </Suspense>
-  );
+const ChangeLanguage = async (language) => {
+  const user = await AmplifyAuth.currentAuthenticatedUser();
+  await AmplifyAuth.updateUserAttributes(user, { 'locale': language });
 }
 
-export default App;
+...
+
+const Auth = {
+  SignUp,
+  ResendConfirmationCode,
+  ConfirmSignUp,
+  SignIn,
+  ForgotPassword,
+  RedefinePassword,
+  GetUser,
+  SignOut,
+  ChangeEmail,
+  ConfirmChangeEmail,
+  ChangePassword,
+  ChangeLanguage
+};
+
+export default Auth;
 
 ```
 
-And we are free to create the profile page `src/pages/home/Profile.jsx`
+Now we need a Select component, just like the Input component, to give the user the options of language.
+
+`src/components/Select.jsx`
+
+```JS
+const Select = ({ value, handler, children }) => (
+  <select
+    value={value}
+    onChange={(e) => handler(e.target.value)}
+    className=" block w-full px-4 py-2 font-normal bg-white border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:border-indigo-500 focus:outline-none"
+  >
+    {children}
+  </select>
+);
+
+export default Select;
+
+```
+
+and add `export { default as Select } from "./Select";` in `src/components/index.js`.
+
+The Profile page now will have a huge refactory to have the new Select component, translations and dynamic routes... and also handle the error responses from Cognito... and we can do better in the design part, making more responsive.
+
+Final profile page `src/pages/home/Profile.jsx`
 
 ```JS
 import { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
+import { LANGUAGES, ROUTES } from "../../constants";
 import Auth from "../../api/auth";
-import { Alert, Button, Form, Input, Title } from "../../components";
+import { Alert, Button, Form, Input, Select, Title } from "../../components";
 import { isValidEmail } from "../../helpers";
 
 export default function Profile() {
+  const navigate = useNavigate();
   const { user, loadUser, setLoading } = useOutletContext();
   const [alert, setAlert] = useState();
   const [showCode, setShowCode] = useState(false);
@@ -2044,15 +1394,40 @@ export default function Profile() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
+  const [language, setLanguage] = useState(user.locale);
 
   useEffect(() => {
     user && setEmail(user?.email);
   }, [user]);
 
   const loading = () => {
-    setAlert()
+    setAlert();
     setLoading(true);
-  }
+  };
+
+  const handleErrors = (message) => {
+    let errorMessage = message;
+    switch (message) {
+      case "Attempt limit exceeded, please try after some time.":
+        errorMessage = LANGUAGES[user.locale].CommonError.AttemptLimit;
+        break;
+      case "An account with the given email already exists.":
+        errorMessage = LANGUAGES[user.locale].CommonError.Email;
+        break;
+      case "Invalid verification code provided, please try again.":
+        errorMessage = LANGUAGES[user.locale].CommonError.CodeError;
+        break;
+      case "Incorrect username or password.":
+        errorMessage = LANGUAGES[user.locale].CommonError.Password;
+        break;
+      case "Password did not conform with policy: Password must have symbol characters":
+        errorMessage = LANGUAGES[user.locale].CommonError.NewPassword;
+        break;
+      default:
+        errorMessage = message;
+    }
+    setAlert({ type: "error", text: errorMessage });
+  };
 
   const handleChangeEmail = async () => {
     loading();
@@ -2060,7 +1435,7 @@ export default function Profile() {
       await Auth.ChangeEmail(email);
       setShowCode(true);
     } catch (error) {
-      setAlert({ type: "error", text: error.message });
+      handleErrors(error.message);
     }
     setLoading(false);
   };
@@ -2071,9 +1446,12 @@ export default function Profile() {
       await Auth.ConfirmChangeEmail(code);
       loadUser(true);
       setShowCode(false);
-      setAlert({ type: "success", text: 'Email changed successfully!' });
+      setAlert({
+        type: "success",
+        text: LANGUAGES[user.locale].Profile.EmailSuccess,
+      });
     } catch (error) {
-      setAlert({ type: "error", text: error.message });
+      handleErrors(error.message);
     }
     setLoading(false);
   };
@@ -2082,7 +1460,22 @@ export default function Profile() {
     loading();
     try {
       await Auth.ChangePassword(currentPassword, newPassword);
-      setAlert({ type: "success", text: 'Password changed successfully!' });
+      setAlert({
+        type: "success",
+        text: LANGUAGES[user.locale].Profile.PasswordSuccess,
+      });
+    } catch (error) {
+      handleErrors(error.message);
+    }
+    setLoading(false);
+  };
+
+  const handleChangeLanguage = async () => {
+    loading();
+    try {
+      await Auth.ChangeLanguage(language);
+      loadUser(true);
+      navigate(ROUTES[language].PROFILE);
     } catch (error) {
       setAlert({ type: "error", text: error.message });
     }
@@ -2099,16 +1492,18 @@ export default function Profile() {
     newPassword !== repeatPassword ||
     newPassword.length < 8;
 
+  const disabledLanguage = () => language === user.locale;
+
   const renderEmail = () => (
     <>
       <Input
         type="email"
-        placeholder="Email"
+        placeholder={LANGUAGES[user.locale].Email}
         value={email}
         handler={setEmail}
       />
       <Button
-        text="Change Email"
+        text={LANGUAGES[user.locale].Profile.ChangeEmail}
         disabled={disabledEmail()}
         handler={() => handleChangeEmail()}
       />
@@ -2118,7 +1513,7 @@ export default function Profile() {
   const renderCode = () => (
     <>
       <Title
-        text={`Please, check your email and send the code.`}
+        text={LANGUAGES[user.locale].Profile.CodeAlert}
         color="text-amber-500"
         size="text-sm"
       />
@@ -2144,25 +1539,25 @@ export default function Profile() {
       <div className="mb-4 w-full flex flex-col gap-4 justify-center">
         <Input
           type="password"
-          placeholder="Current Password"
+          placeholder={LANGUAGES[user.locale].Profile.CurrentPassword}
           value={currentPassword}
           handler={setCurrentPassword}
         />
         <Input
           type="password"
-          placeholder="New Password"
+          placeholder={LANGUAGES[user.locale].Profile.NewPassword}
           value={newPassword}
           handler={setNewPassword}
           showTooltip
         />
         <Input
           type="password"
-          placeholder="Repeat New Password"
+          placeholder={LANGUAGES[user.locale].Profile.RepeatNewPassword}
           value={repeatPassword}
           handler={setRepeatPassword}
         />
         <Button
-          text="Change Password"
+          text={LANGUAGES[user.locale].Profile.ChangePassword}
           disabled={disabledPassword()}
           handler={() => handlePassword()}
         />
@@ -2170,130 +1565,531 @@ export default function Profile() {
     </Form>
   );
 
+  const renderChangeLanguage = () => (
+    <Form>
+      <div className="mb-4 w-full flex flex-col gap-4 justify-center">
+        <Select value={language} handler={setLanguage}>
+          {Object.keys(LANGUAGES).map((l) => (
+            <option key={l} value={l}>
+              {LANGUAGES[user.locale].Languages[l]}
+            </option>
+          ))}
+        </Select>
+        <Button
+          text={LANGUAGES[user.locale].Profile.ChangeLanguage}
+          disabled={disabledLanguage()}
+          handler={() => handleChangeLanguage()}
+        />
+      </div>
+    </Form>
+  );
+
   return (
     <section>
-      <Title text="Profile" back="/home" />
+      <Title
+        text={LANGUAGES[user.locale].Profile.Profile}
+        back={ROUTES[user.locale].HOME}
+      />
       <Alert type={alert?.type} text={alert?.text} />
-      {renderChangeEmail()}
-      {renderChangePassword()}
+      <div className="grid sm:grid-cols-3 gap-2">
+        {renderChangeEmail()}
+        {renderChangePassword()}
+        {renderChangeLanguage()}
+      </div>
     </section>
   );
 }
 
 ```
 
-But now we need more functions to handle the email and password change, this will be in `src/api/auth.js`
+And the language files also need to have the Select and the errors.
+
+`src/constants/languages/en_us.js`
 
 ```JS
-...
-const ChangeEmail = async (email) => {
-  const user = await AmplifyAuth.currentAuthenticatedUser();
-  await AmplifyAuth.updateUserAttributes(user, { 'email': email });
-}
-
-const ConfirmChangeEmail = async (code) => {
-  await AmplifyAuth.verifyCurrentUserAttributeSubmit('email', code);
-}
-
-const ChangePassword = async (pwd, newPwd) => {
-  const user = await AmplifyAuth.currentAuthenticatedUser();
-  await AmplifyAuth.changePassword(user, pwd, newPwd);
-}
-
-const Auth = {
-  SignUp,
-  ResendConfirmationCode,
-  ConfirmSignUp,
-  SignIn,
-  ForgotPassword,
-  RedefinePassword,
-  GetUser,
-  SignOut,
-  ChangeEmail,
-  ConfirmChangeEmail,
-  ChangePassword
+const en_us_lang = {
+  Loading: "Loading",
+  Email: "Email",
+  Password: "Password",
+  Code: "Code",
+  PasswordRules: {
+    Chars: "Must have at least 8 chars",
+    Lowercase: "Requires Lowercase",
+    Uppercase: "Requires Uppercase",
+    Number: "Requires Number",
+    Symbol: "Requires Symbol",
+  },
+  Languages: {
+    "en-US": "English",
+    "pt-BR": "Portuguese",
+  },
+  NotFound: {
+    Sorry: "Sorry",
+    PageNotFound: "Page Not Found",
+  },
+  CommonError: {
+    Login: "Sorry, Unable to login",
+    SendCode: "Unable to send code, email is correct?",
+    RedefinePassword:
+      "Unable to redefine password, email, code or new password are wrong!",
+    SignUp: "Unable to Register. Email already exists or Password are wrong!",
+    ConfirmSignUp: "Unable to confirm registration, email or code are wrong!",
+    CodeError: "Invalid verification code provided, please try again.",
+    Email: "An account with the given email already exists.",
+    Password: "Incorrect Password.",
+    NewPassword: "Password did not conform with policy.",
+    AttemptLimit: "Attempt limit exceeded, please try after some time.",
+  },
+  Auth: {
+    SignInTitle: "Sign In",
+	@@ -35,26 +42,28 @@
+    SendCode: "Send Code",
+    BackToSignIn: "Back to Sign In",
+    RedefinePasswordTitle: "Redefine Password",
+    RepeatPassword: "Repeat Password",
+    RedefinePasswordSuccess: "Password changed successfully!",
+    RedefinePasswordButton: "Redefine Password",
+    SignUpTitle: "Sign Up",
+    SignUpSuccess: "Check your Email",
+    SignUpButton: "Sign Up",
+    ConfirmRegistrationTitle: "Confirm Registration",
+    ResendConfirmationCode: "Resend Confirmation Code",
+    ResendConfirmationSuccess: "Code Resent, Check your Email",
+    ConfirmRegistrationSuccess: "Confirmation successful!",
+    ConfirmRegistrationButton: "Confirm",
+  },
+  Profile: {
+    Profile: "Profile",
+    SignOut: "Sign Out",
+    ChangeEmail: "Change Email",
+    CurrentPassword: "Current Password",
+    NewPassword: "New Password",
+    RepeatNewPassword: "Repeat New Password",
+    ChangePassword: "Change Password",
+    Language: "Language",
+    ChangeLanguage: "Change Language",
+    CodeAlert: "Please, check your email and send the code.",
+    EmailSuccess: "Email changed successfully!",
+    PasswordSuccess: "Password changed successfully!",
+  },
 };
-...
+export default en_us_lang;
+
 ```
 
-The user can now change the email, receive a confirmation code and validate the code, and can also change the password, but for this he need to remember the current password.
-
-## Public and Protected Routes
-
-code: <https://github.com/gugazimmermann/amplify-login/tree/v1.0>
-
-Using the React Router v6 this can easily be done with the current Layout pages that we already have.
-
-In `src/pages/auth/AuthLayout.jsx` you will need to import the useEffect hook
+`src/constants/languages/pt_br.js`
 
 ```JS
-import { useEffect, useState } from "react";
+const pt_br_lang = {
+  Loading: "Carregando",
+  Email: "Email",
+  Password: "Senha",
+  Code: "Código",
+  PasswordRules: {
+    Chars: "Pelo menos 8 caracteres",
+    Lowercase: "Requer Minúsculas",
+    Uppercase: "Requer Maiúsculas",
+    Number: "Requer Número",
+    Symbol: "Requer Símbolo",
+  },
+  Languages: {
+    "en-US": "Inglês",
+    "pt-BR": "Português",
+  },
+  NotFound: {
+    Sorry: "Desculpe",
+    PageNotFound: "Página Não Encontrada",
+  },
+  CommonError: {
+    Login: "Desculpe, Não foi possível entrar",
+    SendCode: "Não foi possível enviar o código, o email está correto?",
+    RedefinePassword:
+      "Não foi possível redefinir a senha, e-mail, código ou nova senha estão errados!",
+    SignUp:
+      "Não foi possível registrar. O e-mail já existe ou a senha está errada!",
+    ConfirmSignUp:
+      "Não foi possível confirmar o registro, e-mail ou código estão errados!",
+    CodeError: "Código de verificação inválido. Tente novamente.",
+    Email: "Já existe uma conta com este e-mail.",
+    Password: "Senha Incorreta.",
+    NewPassword: "Verifique as regras para senha",
+    AttemptLimit: "Attempt limit exceeded, please try after some time.",
+  },
+  Auth: {
+    SignInTitle: "Entrar",
+    RememberMe: "Manter Conectado",
+    ForgotPassword: "Esqueceu a Senha?",
+    ForgotPasswordSuccess: "Verifique seu Email",
+    SignInButton: "Entrar",
+    NotRegistered: "Não tem Registro?",
+    ForgotPasswordTitle: "Esqueceu a Senha?",
+    SendCode: "Enviar Código",
+    BackToSignIn: "Votlar para Entrar",
+    RedefinePasswordTitle: "Redefinir Senha",
+    RepeatPassword: "Repita a Senha",
+    RedefinePasswordSuccess: "Senha Alterada com Sucesso!",
+    RedefinePasswordButton: "Redefinir Senha",
+    SignUpTitle: "Registro",
+    SignUpSuccess: "Verifique seu Email",
+    SignUpButton: "Registrar",
+    ConfirmRegistrationTitle: "Confirmar Registro",
+    ResendConfirmationCode: "Re-enviar Código de Confirmação",
+    ResendConfirmationSuccess: "Código enviado, verifique seu email",
+    ConfirmRegistrationSuccess: "Confirmação realizada com sucesso!",
+    ConfirmRegistrationButton: "Confirmar",
+  },
+  Profile: {
+    Profile: "Perfil",
+    SignOut: "Sair",
+    ChangeEmail: "Alterar Email",
+    CurrentPassword: "Senha Atual",
+    NewPassword: "Nova Senha",
+    RepeatNewPassword: "Repetir Nova Senha",
+    ChangePassword: "Alterar Senha",
+    Language: "Idioma",
+    ChangeLanguage: "Alterar Idioma",
+    CodeAlert: "Por favor, verifique seu email e envie o código.",
+    EmailSuccess: "Email alterado com sucesso!",
+    PasswordSuccess: "Senha alterada com sucesso!",
+  },
+};
+export default pt_br_lang;
+
 ```
 
-and add just before the `return`
+## Cognito Multi-Language Emails
+
+Code: <https://github.com/gugazimmermann/amplify-login/tree/v1.4>
+
+When a new user Sign In, or ask to retrive the password, Cognito send emails with the code and other informations... by default in English. If the user choose another language to use the app, we want Cognito send this message in the user language, we can do it updating Cognito with Amplify.
+
+Firt run `amplify auth update`.
+
+![update](./readme-images/amplify-05.png)
+
+Keep all the same as the first part, but when asked for the Lambda Triggers select Yes, choose Custom Message and Create your own module. And then edit the custom function.
+
+![update](./readme-images/amplify-06.png)
+
+Amplify will create a template for the function, so do not touch the other files, you will need to edit just `amplify/backend/function/amplifyloginAuthCustomMessage/src/custom.js`.
 
 ```JS
-...
-  const loadUser = async () => {
-    setLoading(true);
-    try {
-      await Auth.GetUser();
-      setLoading(false);
-      navigate('/home')
-    } catch (error) {
-      setLoading(false);
-    }
+/**
+ * REMEMBER TO ADD PROCESS ENV: TITLE, SITE_URL and SITE_LOGO
+ */
+ function generateEmailBody(emailBody) {
+	return `
+<html>
+  <body style="background-color:#ffffff">
+    <table align="center" cellpadding="0" cellspacing="0" style="width:100%; background-color:#ffffff">
+      <tbody>
+        <tr>
+          <td style="text-align:center">
+            <img alt="Logo" src="${process.env.SITE_LOGO}" style="height:48px; width:48px" />
+            <p style="color:#6366f1; margin-top:2px"><strong>${process.env.TITLE}</strong></p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding-top:10px; text-align:left">
+          ${emailBody}
+          </td>
+        </tr>
+				<tr>
+				<td style="padding-top:25px; text-align:center">
+					${process.env.SITE_URL}
+				</td>
+			</tr>
+      </tbody>
+    </table>
+  </body>
+</html>
+`;
+}
+
+function handleTranslation(locale) {
+	let lang = undefined;
+	switch (locale) {
+		case 'en-US':
+			lang = require('./en-US');
+			return lang;
+		case 'pt-BR':
+			lang = require('./pt-BR');
+			return lang;
+		default:
+			lang = require('./en-US');
+			return lang;
+	}
+}
+
+/**
+ * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
+ */
+exports.handler = async (event) => {
+	console.log(`EVENT: ${JSON.stringify(event)}`);
+	const lang = handleTranslation(event.request.userAttributes.locale)
+	switch (event.triggerSource) {
+		case 'CustomMessage_SignUp':
+			return lang.signUpMessage(event, generateEmailBody);
+		case 'CustomMessage_ResendCode':
+			return lang.signUpMessage(event, generateEmailBody);
+		case 'CustomMessage_ForgotPassword':
+			return lang.forgotPassword(event, generateEmailBody);
+		case 'CustomMessage_UpdateUserAttribute':
+			return lang.updateUserAttributeMessage(event, generateEmailBody);
+		case 'CustomMessage_VerifyUserAttribute':
+			return lang.verifyUserAttribute(event, generateEmailBody);
+		default:
+			return event;
+	}
+};
+
+```
+
+In custom.js we just have a template to be used in the email, and a switch to see the event case and send to the right language.
+
+in the same folder create the files for the languages:
+
+`amplify/backend/function/amplifyloginAuthCustomMessage/src/en-US.js`
+
+```JS
+async function signUpMessage(event, generateEmailBody) {
+  event.response = {
+    emailSubject: `${process.env.TITLE}: Verification Code`,
+    emailMessage: generateEmailBody(`
+      <p>Welcome to ${process.env.TITLE},</p>
+      <p>Your registered email is ${event.request.userAttributes.email} and your verification code is: ${event.request.codeParameter}</p>
+      <br />
+      <p>Enter your code in the field provided or <a href="${process.env.SITE_URL}confirm-registration?lang=${event.request.userAttributes.locale}&email=${event.request.userAttributes.email}&code=${event.request.codeParameter}">click here</a>.</p>
+      `),
   };
+  return event;
+}
+
+async function forgotPassword(event, generateEmailBody) {
+  event.response = {
+    emailSubject: `${process.env.TITLE}: Recover Password`,
+    emailMessage: generateEmailBody(`
+      <p>Your password recovery code is: ${event.request.codeParameter}</p>
+      <br />
+      <p>Enter your code in the field provided or <a href="${process.env.SITE_URL}redefine-password?lang=${event.request.userAttributes.locale}&email=${event.request.userAttributes.email}&code=${event.request.codeParameter}">click here</a>.</p>
+      `),
+  };
+  return event;
+}
+
+async function updateUserAttributeMessage(event, generateEmailBody) {
+  event.response = {
+    emailSubject: `${process.env.TITLE}: Profile Updated`,
+    emailMessage: generateEmailBody(
+      `<p>Your profile has been updated, use the code: ${event.request.codeParameter}</p>`
+    ),
+  };
+  return event;
+}
+
+async function verifyUserAttribute(event, generateEmailBody) {
+  event.response = {
+    emailSubject: `${process.env.TITLE}: Update Email`,
+    emailMessage: generateEmailBody(
+      `<p>To update your email use the code: ${event.request.codeParameter}</p>`
+    ),
+  };
+  return event;
+}
+
+module.exports = {
+  signUpMessage,
+  forgotPassword,
+  updateUserAttributeMessage,
+  verifyUserAttribute,
+};
+
+```
+
+`amplify/backend/function/amplifyloginAuthCustomMessage/src/pt-BR.js`
+
+```JS
+async function signUpMessage(event, generateEmailBody) {
+  event.response = {
+    emailSubject: `${process.env.TITLE}: Código de Verificação`,
+    emailMessage: generateEmailBody(`
+      <p>Bem Vindo ao ${process.env.TITLE},</p>
+      <p>Seu email de cadastrado é ${event.request.userAttributes.email} e seu código de verificação é: ${event.request.codeParameter}</p>
+      <br />
+      <p>Digite seu código no campo informado ou <a href="${process.env.SITE_URL}confirmar-registro?lang=${event.request.userAttributes.locale}&email=${event.request.userAttributes.email}&code=${event.request.codeParameter}">clique aqui</a>.</p>
+      `),
+  };
+  return event;
+}
+
+async function forgotPassword(event, generateEmailBody) {
+  event.response = {
+    emailSubject: `${process.env.TITLE}: Recuperar Senha`,
+    emailMessage: generateEmailBody(`
+      <p>Seu código de recuperação de senha é: ${event.request.codeParameter}</p>
+      <br />
+      <p>Digite seu código no campo informado ou <a href="${process.env.SITE_URL}redefinir-senha?lang=${event.request.userAttributes.locale}&email=${event.request.userAttributes.email}&code=${event.request.codeParameter}">clique aqui</a>.</p>
+      `),
+  };
+  return event;
+}
+
+async function updateUserAttributeMessage(event, generateEmailBody) {
+  event.response = {
+    emailSubject: `${process.env.TITLE}: Perfil Atualizado`,
+    emailMessage: generateEmailBody(
+      `<p>Seu Perfil foi atualizado, utilize o código: ${event.request.codeParameter}</p>`
+    ),
+  };
+  return event;
+}
+
+async function verifyUserAttribute(event, generateEmailBody) {
+  event.response = {
+    emailSubject: `${process.env.TITLE}: Email Alterado`,
+    emailMessage: generateEmailBody(
+      `<p>Para alterar o email, utilize o código: ${event.request.codeParameter}</p>`
+    ),
+  };
+  return event;
+}
+
+module.exports = {
+  signUpMessage,
+  forgotPassword,
+  updateUserAttributeMessage,
+  verifyUserAttribute,
+};
+
+```
+
+As you may have been noticied, we are using three environment variables, **TITLE**, **SITE_LOGO** and **SITE_URL**. To add this to the lambda we need to update the function, run `amplify function update`, select the CustomMessage function, and then Environment variables configuration.
+
+Add **TITLE** with the same value that we are using in the `.env` file.
+
+Select Add new environment variable and add **SITE_URL**, here you can add your custom domain if you have configurated one in the end of part 1, or add the CloudFront Endpoint. If you run `amplify status` will be showing at the end of the information about the CloudFormation.
+
+Again, select Add new environment variable and add **SITE_LOGO**, you can use one of the images that we created in part 1 to be the icons of the site.
+
+You can run `amplify console` and then `AWS Console`, go to S3, select the bucket that amplify uses to hosting the site (in my casa is *amplifylogin-dev*), click in **logo192.png** and copy **Object URL**... but this object is not public, it's only have permission to CloudFrount. To be able to use the image in the emails, go to Permissions > Access control list (ACL) and Edit. Select Read in Everyone (public access) row, scroll down and click *I understand the effects of these changes on this object.*, and save.
+
+Now past the **Object URL** as a value to **SITE_LOGO**.
+
+![environment](./readme-images/amplify-07.png)
+
+Select I'm Done and finish the update.
+
+Run `amplify status` to see the CloudFormation, amplify will tell that need to Update the Auth and Create the new lambda.
+
+![status](./readme-images/amplify-08.png)
+
+Run now `amplify publish` to send everything to the cloud, the backend and frontend part.
+
+And a tip... if you want to test the app in the hosting URL right after publish, maybe the site will not be updated because the CloudFront cache. If you don't want to wait the cache be updated you can force it. Access AWS console, search for CloudFront, click the distribution, go to invalidations and create a new using just `/*`, and then wait the progress. After the progress finish the site will be updated.
+
+## Using URL Params
+
+Code: <https://github.com/gugazimmermann/amplify-login/tree/v1.5>
+
+You may have notice that in some emails we are using the SITE_URL to send some information when the user device to **click here**, just to make easier to the user to finish the login flow. We are sending the lang, email and code.
+
+First we need to change `src/App.js` to receive the lang and send the user to the righ route.
+
+```JS
+
+...
+
+import { lazy, Suspense, useContext, useEffect } from "react";
+import { Routes, Route, useSearchParams } from "react-router-dom";
+import { AppContext } from "./context";
+import { ROUTES, TYPES } from "./constants";
+import { Loading } from "./components";
+
+...
+
+function App() {
+  const [searchParams] = useSearchParams();
+  const { state, dispatch } = useContext(AppContext);
 
   useEffect(() => {
-    loadUser();
+    if (searchParams.get("lang"))
+      dispatch({ type: TYPES.UPDATE_LANG, payload: searchParams.get("lang") });
   }, []);
+
+  return (
+
 ...
+
 ```
 
-And in `src/pages/home/Layout.jsx` change the function loadUser
+In `src/pages/auth/ConfirmSignUp.jsx` we want to fill the inputs with the email and the code.
 
 ```JS
+
 ...
-  const loadUser = async (force) => {
-    if (!user || force === true) {
-      setLoading(true);
-      try {
-        const attributes = await Auth.GetUser();
-        setUser(attributes)
-        setLoading(false);
-      } catch (error) {
-        navigate('/')
-      }
-    }
-  };
+
+import { useEffect, useState, useContext } from "react";
+import { useOutletContext, useLocation, useSearchParams } from "react-router-dom";
+import { AppContext } from "../../context";
+import { LANGUAGES, ROUTES } from "../../constants";
+import { isValidEmail } from "../../helpers";
+
 ...
+
+export default function ConfirmSignUp() {
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const { state } = useContext(AppContext);
+
+...
+
+  useEffect(() => {
+		if (searchParams.get('email')) setEmail(searchParams.get('email'));
+		if (searchParams.get('code')) setCode(searchParams.get('code'));
+	}, []);
+
+...
+
 ```
 
-Now if the user is already authenticated and try to access the login flow, will be redirect to the home page, and if the user is not authenticated and try to access the home or profile, will be redirected to the Sign In page.
+And in `src/pages/auth/RedefinePassword.jsx` we need the same
 
-## Hosting
+```JS
 
-We can hosting the app using Amplify, this will create a S3 Bucket, create the CloudFront and send the prod / build version of the app.
+...
 
-Run `amplify hosting add`, choose Prod (this will use https) and then run `amplify publish`
+import { useEffect, useState, useContext } from "react";
+import { useOutletContext, useLocation, useSearchParams } from "react-router-dom";
+import { AppContext } from "../../context";
+import { LANGUAGES, ROUTES } from "../../constants";
+import { isValidEmail } from "../../helpers";
 
-![Hosting](./readme-images/amplify-04.png)
+...
 
-You can now access the Hosting endoint (<https://d33esmxjte54cm.cloudfront.net/>) and the app will be running.
+export default function RedefinePassword() {
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const { state } = useContext(AppContext);
 
-If you have a domain and want to link the CloudFront Distribution with the domain, you need to access the **AWS Console** (`amplify console`), search for **CloudFront**, click in the Distribution just created and edit, add a item in *Alternate domain name (CNAME) - optional* with the URL that you want (in my case is *amplifylogintutorial.pocz.io*), add a SSL Certificate (because we are using https) and save changes... wait a while because the deploying state can take some time.
+...
 
-Now search for **Route 53** in the *AWS Console*, go to **Hosted zones**, click the domain, **Create Record**, in record name put the same that you used in CloudFron (*amplifylogintutorial*), keep Record type as A, click Alias and select *Alias to CloudFront distribution*, select the distribution and click Create Records. Wait for the propagation (when the status change from Pending to INSYNC) and access your new app running in the URL.
+  useEffect(() => {
+		if (searchParams.get('email')) setEmail(searchParams.get('email'));
+		if (searchParams.get('code')) setCode(searchParams.get('code'));
+	}, []);
 
-And the next articles I’ll show how to use the GraphQL / DynamoDB to store other user information, make this app multi-language and another Amplify cool stuff.
+...
+
+```
+
+And that's it... now we have the Login flow running, the user can change information in the Profile, change the language of the app and also receive Cognito's emails in the same language the was choosen.
+
+In the next article I’ll show how to use the GraphQL / DynamoDB to store other user information, and start to add another functionaties to the app.
 
 ----
 
-You can see the final code here: <https://github.com/gugazimmermann/amplify-login>
+You can see the final code here: https://github.com/gugazimmermann/amplify-login
 
-and try the App here: <https://amplifylogintutorial.pocz.io/>
+and try the App here: https://amplifylogintutorial.pocz.io/
 
-And you can add me on LinkedIn <https://www.linkedin.com/in/guga-zimmermann/>
-
-----
+And you can add me on LinkedIn https://www.linkedin.com/in/guga-zimmermann/
