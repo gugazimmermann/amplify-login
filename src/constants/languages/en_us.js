@@ -10,6 +10,10 @@ const en_us_lang = {
     Number: "Requires Number",
     Symbol: "Requires Symbol",
   },
+  Languages: {
+    "en-US": "English",
+    "pt-BR": "Portuguese",
+  },
   NotFound: {
     Sorry: "Sorry",
     PageNotFound: "Page Not Found",
@@ -22,7 +26,10 @@ const en_us_lang = {
     SignUp: "Unable to Register. Email already exists or Password are wrong!",
     ConfirmSignUp: "Unable to confirm registration, email or code are wrong!",
     CodeError: "Invalid verification code provided, please try again.",
-    EmailError: "An account with the given email already exists.",
+    Email: "An account with the given email already exists.",
+    Password: "Incorrect Password.",
+    NewPassword: "Password did not conform with policy.",
+    AttemptLimit: "Attempt limit exceeded, please try after some time.",
   },
   Auth: {
     SignInTitle: "Sign In",
@@ -55,6 +62,8 @@ const en_us_lang = {
     NewPassword: "New Password",
     RepeatNewPassword: "Repeat New Password",
     ChangePassword: "Change Password",
+    Language: "Language",
+    ChangeLanguage: "Change Language",
     CodeAlert: "Please, check your email and send the code.",
     EmailSuccess: "Email changed successfully!",
     PasswordSuccess: "Password changed successfully!",

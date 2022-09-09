@@ -1,11 +1,9 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { AppContext } from "../context";
-import { LANGUAGES } from "../constants";
+import { LANGUAGES, ROUTES } from "../constants";
 import { useCloseModal } from "../helpers";
 
-const NavProfile = ({ handleSignOut }) => {
-  const { state } = useContext(AppContext);
+const NavProfile = ({ user, handleSignOut }) => {
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const ref = useCloseModal(open, setOpen);
@@ -22,11 +20,13 @@ const NavProfile = ({ handleSignOut }) => {
       } list-style-none w-48 right-0 top-9 border bg-white z-50`}
     >
       <li className="p-2 text-center">
-        <Link to="/profile">{LANGUAGES[state.lang].Profile.Profile}</Link>
+        <Link to={ROUTES[user.locale].PROFILE}>
+          {LANGUAGES[user.locale].Profile.Profile}
+        </Link>
       </li>
       <li className="p-2 text-center">
         <button type="button" onClick={() => handleSignOut()}>
-          {LANGUAGES[state.lang].Profile.SignOut}
+          {LANGUAGES[user.locale].Profile.SignOut}
         </button>
       </li>
     </ul>

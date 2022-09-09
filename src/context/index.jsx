@@ -4,17 +4,17 @@ import AppReducer from "./reducers";
 
 const initial = { lang: "en-US" };
 
-const getStaste = () =>
+const getState = () =>
   localStorage.getItem(STATENAME)
     ? JSON.parse(localStorage.getItem(STATENAME))
     : initial;
 
 const mainReducer = (state, action) => AppReducer(state, action);
 
-const AppContext = createContext({ state: getStaste(), dispatch: () => null });
+const AppContext = createContext({ state: getState(), dispatch: () => null });
 
 function AppProvider({ children }) {
-  const [state, dispatch] = useReducer(mainReducer, getStaste());
+  const [state, dispatch] = useReducer(mainReducer, getState());
   return (
     <AppContext.Provider value={{ state, dispatch }}>
       {children}

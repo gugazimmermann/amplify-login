@@ -5,7 +5,7 @@ const pt_br_routes = {
   SIGN_UP: "/registro",
   CONFIRM_SIGN_UP: "/confirmar-registro",
   HOME: "/inicial",
-  PROFILE: "/peril",
+  PROFILE: "/perfil",
 };
 
 export default pt_br_routes;

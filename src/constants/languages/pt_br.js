@@ -10,6 +10,10 @@ const pt_br_lang = {
     Number: "Requer Número",
     Symbol: "Requer Símbolo",
   },
+  Languages: {
+    "en-US": "Inglês",
+    "pt-BR": "Português",
+  },
   NotFound: {
     Sorry: "Desculpe",
     PageNotFound: "Página Não Encontrada",
@@ -24,7 +28,10 @@ const pt_br_lang = {
     ConfirmSignUp:
       "Não foi possível confirmar o registro, e-mail ou código estão errados!",
     CodeError: "Código de verificação inválido. Tente novamente.",
-    EmailError: "Já existe uma conta com este e-mail.",
+    Email: "Já existe uma conta com este e-mail.",
+    Password: "Senha Incorreta.",
+    NewPassword: "Verifique as regras para senha",
+    AttemptLimit: "Attempt limit exceeded, please try after some time.",
   },
   Auth: {
     SignInTitle: "Entrar",
@@ -50,16 +57,18 @@ const pt_br_lang = {
     ConfirmRegistrationButton: "Confirmar",
   },
   Profile: {
-    Profile: "Profile",
-    SignOut: "Sign Out",
-    ChangeEmail: "Change Email",
-    CurrentPassword: "Current Password",
-    NewPassword: "New Password",
-    RepeatNewPassword: "Repeat New Password",
-    ChangePassword: "Change Password",
-    CodeAlert: "Please, check your email and send the code.",
-    EmailSuccess: "Email changed successfully!",
-    PasswordSuccess: "Password changed successfully!",
+    Profile: "Perfil",
+    SignOut: "Sair",
+    ChangeEmail: "Alterar Email",
+    CurrentPassword: "Senha Atual",
+    NewPassword: "Nova Senha",
+    RepeatNewPassword: "Repetir Nova Senha",
+    ChangePassword: "Alterar Senha",
+    Language: "Idioma",
+    ChangeLanguage: "Alterar Idioma",
+    CodeAlert: "Por favor, verifique seu email e envie o código.",
+    EmailSuccess: "Email alterado com sucesso!",
+    PasswordSuccess: "Senha alterada com sucesso!",
   },
 };
 

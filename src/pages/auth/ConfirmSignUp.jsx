@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import { useOutletContext, useLocation } from "react-router-dom";
+import { useOutletContext, useLocation, useSearchParams } from "react-router-dom";
 import { AppContext } from "../../context";
 import { LANGUAGES, ROUTES } from "../../constants";
 import { isValidEmail } from "../../helpers";
@@ -8,11 +8,17 @@ import ConfirmSignUpImage from "../../images/confirm_signup.svg";
 
 export default function ConfirmSignUp() {
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const { state } = useContext(AppContext);
   const { setImg, setAlert, resendConfirmationCode, confirmSignUp } =
     useOutletContext();
   const [email, setEmail] = useState(location?.state?.email || "");
   const [code, setCode] = useState("");
+
+  useEffect(() => {
+		if (searchParams.get('email')) setEmail(searchParams.get('email'));
+		if (searchParams.get('code')) setCode(searchParams.get('code'));
+	}, []);
 
   useEffect(() => {
     setImg(ConfirmSignUpImage);

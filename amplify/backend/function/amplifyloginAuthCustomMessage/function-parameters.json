@@ -1,0 +1,31 @@
+{
+  "trigger": true,
+  "modules": [
+    "custom"
+  ],
+  "parentResource": "amplifyloginAuth",
+  "functionName": "amplifyloginAuthCustomMessage",
+  "resourceName": "amplifyloginAuthCustomMessage",
+  "parentStack": "auth",
+  "triggerEnvs": [],
+  "triggerDir": "/snapshot/repo/build/node_modules/@aws-amplify/amplify-category-auth/provider-utils/awscloudformation/triggers/CustomMessage",
+  "triggerTemplate": "CustomMessage.json.ejs",
+  "triggerEventPath": "CustomMessage.event.json",
+  "roleName": "amplifyloginAuthCustomMessage",
+  "skipEdit": true,
+  "enableCors": false,
+  "environmentVariableList": [
+    {
+      "cloudFormationParameterName": "title",
+      "environmentVariableName": "TITLE"
+    },
+    {
+      "cloudFormationParameterName": "siteUrl",
+      "environmentVariableName": "SITE_URL"
+    },
+    {
+      "cloudFormationParameterName": "siteLogo",
+      "environmentVariableName": "SITE_LOGO"
+    }
+  ]
+}

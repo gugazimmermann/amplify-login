@@ -1,7 +1,7 @@
-import { lazy, Suspense, useContext } from "react";
-import { Routes, Route } from "react-router-dom";
+import { lazy, Suspense, useContext, useEffect } from "react";
+import { Routes, Route, useSearchParams } from "react-router-dom";
 import { AppContext } from "./context";
-import { ROUTES } from "./constants";
+import { ROUTES, TYPES } from "./constants";
 import { Loading } from "./components";
 
 const NotFound = lazy(() => import("./pages/not-found/NotFound"));
@@ -17,7 +17,13 @@ const Home = lazy(() => import("./pages/home/Home"));
 const Profile = lazy(() => import("./pages/home/Profile"));
 
 function App() {
-  const { state } = useContext(AppContext);
+  const [searchParams] = useSearchParams();
+  const { state, dispatch } = useContext(AppContext);
+
+  useEffect(() => {
+    if (searchParams.get("lang"))
+      dispatch({ type: TYPES.UPDATE_LANG, payload: searchParams.get("lang") });
+  }, []);
 
   return (
     <Suspense fallback={<Loading />}>

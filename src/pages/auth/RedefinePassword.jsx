@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import { useOutletContext, useLocation } from "react-router-dom";
+import { useOutletContext, useLocation, useSearchParams } from "react-router-dom";
 import { AppContext } from "../../context";
 import { LANGUAGES, ROUTES } from "../../constants";
 import { isValidEmail } from "../../helpers";
@@ -8,6 +8,7 @@ import RedefinePasswordImage from "../../images/redefine_password.svg";
 
 export default function RedefinePassword() {
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const { state } = useContext(AppContext);
   const { setImg, setAlert, redefinePassword } = useOutletContext();
   const [email, setEmail] = useState(location?.state?.email || "");
@@ -15,6 +16,13 @@ export default function RedefinePassword() {
   const [pwd, setPwd] = useState("");
   const [repeat, setRepeat] = useState("");
 
+
+  useEffect(() => {
+		if (searchParams.get('email')) setEmail(searchParams.get('email'));
+		if (searchParams.get('code')) setCode(searchParams.get('code'));
+	}, []);
+
+  
   useEffect(() => {
     setImg(RedefinePasswordImage);
     setAlert(location?.state?.alert);
