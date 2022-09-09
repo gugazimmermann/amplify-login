@@ -247,7 +247,7 @@ export { default as en_us_lang } from "./en_us";
 
 Now we can move on and create the app context, so the user can choose a language before to the login, and using the localStorage we can remember what language the user want to see the app.
 
-First create the Reducer, that will receive the dispach event and the payload to change the language.
+First create the Reducer, that will receive the dispatch event and the payload to change the language.
 
 `src/context/reducers.js`
 
@@ -1136,7 +1136,7 @@ export default function SignUp() {
 
 Code: <https://github.com/gugazimmermann/amplify-login/tree/v1.3>
 
-We have done all the job for the app to have dynamic language using the state before the user authenticate, but now we need to remember the choosen language and translate de app after the authentication. In part 1 we send the locale hard coded, now we have a way to know the language.
+We have done all the job for the app to have dynamic language using the state before the user authenticate, but now we need to remember the chosen language and translate the app after the authentication. In part 1 we send the locale hard coded, now we have a way to know the language.
 
 But first let's change the SignIn function to return the cognito user object, because we will need to know the language of the user to change the HOME route..
 
@@ -1157,7 +1157,7 @@ const SignIn = async (email, pwd, remember) => {
 ...
 ```
 
-in `src/pages/auth/AuthLayout.jsx` we will send with the SignUp the language, then when the user SignIn dispatch to the context the user languange, and send to the right HOME route.
+in `src/pages/auth/AuthLayout.jsx` we will send with the SignUp the language, then when the user SignIn dispatch to the context the user language, and send to the right HOME route.
 
 ```JS
 ...
@@ -1372,7 +1372,7 @@ export default Select;
 
 and add `export { default as Select } from "./Select";` in `src/components/index.js`.
 
-The Profile page now will have a huge refactory to have the new Select component, translations and dynamic routes... and also handle the error responses from Cognito... and we can do better in the design part, making more responsive.
+The Profile page now will have a huge re-factory to have the new Select component, translations and dynamic routes... and also handle the error responses from Cognito... and we can do better in the design part, making more responsive.
 
 Final profile page `src/pages/home/Profile.jsx`
 
@@ -1761,9 +1761,9 @@ export default pt_br_lang;
 
 Code: <https://github.com/gugazimmermann/amplify-login/tree/v1.4>
 
-When a new user Sign In, or ask to retrive the password, Cognito send emails with the code and other informations... by default in English. If the user choose another language to use the app, we want Cognito send this message in the user language, we can do it updating Cognito with Amplify.
+When a new user Sign In, or ask to retrieve the password, Cognito send emails with the code and other informations... by default in English. If the user choose another language to use the app, we want Cognito send this message in the user language, we can do it updating Cognito with Amplify.
 
-Firt run `amplify auth update`.
+First run `amplify auth update`.
 
 ![update](./readme-images/amplify-05.png)
 
@@ -1963,15 +1963,15 @@ module.exports = {
 
 ```
 
-As you may have been noticied, we are using three environment variables, **TITLE**, **SITE_LOGO** and **SITE_URL**. To add this to the lambda we need to update the function, run `amplify function update`, select the CustomMessage function, and then Environment variables configuration.
+As you may have been noticed, we are using three environment variables, **TITLE**, **SITE_LOGO** and **SITE_URL**. To add this to the lambda we need to update the function, run `amplify function update`, select the CustomMessage function, and then Environment variables configuration.
 
 Add **TITLE** with the same value that we are using in the `.env` file.
 
-Select Add new environment variable and add **SITE_URL**, here you can add your custom domain if you have configurated one in the end of part 1, or add the CloudFront Endpoint. If you run `amplify status` will be showing at the end of the information about the CloudFormation.
+Select Add new environment variable and add **SITE_URL**, here you can add your custom domain if you have configured one in the end of part 1, or add the CloudFront Endpoint. If you run `amplify status` will be showing at the end of the information about the CloudFormation.
 
 Again, select Add new environment variable and add **SITE_LOGO**, you can use one of the images that we created in part 1 to be the icons of the site.
 
-You can run `amplify console` and then `AWS Console`, go to S3, select the bucket that amplify uses to hosting the site (in my casa is *amplifylogin-dev*), click in **logo192.png** and copy **Object URL**... but this object is not public, it's only have permission to CloudFrount. To be able to use the image in the emails, go to Permissions > Access control list (ACL) and Edit. Select Read in Everyone (public access) row, scroll down and click *I understand the effects of these changes on this object.*, and save.
+You can run `amplify console` and then `AWS Console`, go to S3, select the bucket that amplify uses to hosting the site (in my casa is *amplifylogin-dev*), click in **logo192.png** and copy **Object URL**... but this object is not public, it's only have permission to CloudFront. To be able to use the image in the emails, go to Permissions > Access control list (ACL) and Edit. Select Read in Everyone (public access) row, scroll down and click *I understand the effects of these changes on this object.*, and save.
 
 Now past the **Object URL** as a value to **SITE_LOGO**.
 
@@ -1993,7 +1993,7 @@ Code: <https://github.com/gugazimmermann/amplify-login/tree/v1.5>
 
 You may have notice that in some emails we are using the SITE_URL to send some information when the user device to **click here**, just to make easier to the user to finish the login flow. We are sending the lang, email and code.
 
-First we need to change `src/App.js` to receive the lang and send the user to the righ route.
+First we need to change `src/App.js` to receive the lang and send the user to the right route.
 
 ```JS
 
@@ -2082,7 +2082,7 @@ export default function RedefinePassword() {
 
 ```
 
-And that's it... now we have the Login flow running, the user can change information in the Profile, change the language of the app and also receive Cognito's emails in the same language the was choosen.
+And that's it... now we have the Login flow running, the user can change information in the Profile, change the language of the app and also receive Cognito's emails in the same language the was chosen.
 
 In the next article I’ll show how to use the GraphQL / DynamoDB to store other user information, and start to add another functionaties to the app.
 
