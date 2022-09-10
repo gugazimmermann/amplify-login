@@ -1,13 +1,17 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
 import { LANGUAGES, ROUTES } from "../../constants";
 import Auth from "../../api/auth";
+import Mutations from "../../api/mutations";
 import { Alert, Button, Form, Input, Select, Title } from "../../components";
 import { isValidEmail } from "../../helpers";
+import { AppContext } from "../../context";
 
 export default function Profile() {
+  const { state } = useContext(AppContext);
+  const { user } = state;
   const navigate = useNavigate();
-  const { user, loadUser, setLoading } = useOutletContext();
+  const { loadUser, setLoading } = useOutletContext();
   const [alert, setAlert] = useState();
   const [showCode, setShowCode] = useState(false);
   const [email, setEmail] = useState("");
@@ -65,7 +69,8 @@ export default function Profile() {
     loading();
     try {
       await Auth.ConfirmChangeEmail(code);
-      loadUser(true);
+      await Mutations.UpdateUser({ id: user.id, email, locale: user.locale });
+      loadUser({ force: true, email });
       setShowCode(false);
       setAlert({
         type: "success",
@@ -95,7 +100,8 @@ export default function Profile() {
     loading();
     try {
       await Auth.ChangeLanguage(language);
-      loadUser(true);
+      await Mutations.UpdateUser({ id: user.id, email: user.email, locale: language });
+      loadUser({ force: true, email: user.email });
       navigate(ROUTES[language].PROFILE);
     } catch (error) {
       setAlert({ type: "error", text: error.message });

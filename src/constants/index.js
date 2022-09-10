@@ -5,6 +5,7 @@ export const STATENAME = process.env.REACT_APP_STATE || "amplifylogin";
 
 export const TYPES = {
   UPDATE_LANG: "UPDATE_LANG",
+  UPDATE_USER: "UPDATE_USER",
 };
 
 export const LANGUAGES = {
