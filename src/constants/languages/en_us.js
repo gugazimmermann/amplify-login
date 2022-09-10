@@ -67,6 +67,10 @@ const en_us_lang = {
     CodeAlert: "Please, check your email and send the code.",
     EmailSuccess: "Email changed successfully!",
     PasswordSuccess: "Password changed successfully!",
+    Name: 'Name',
+    Birthdate: 'Birth Date',
+    ChangeAttributes: 'Update Profile',
+    AttributesSuccess: 'Profile Updated successfully!',
   },
 };
 

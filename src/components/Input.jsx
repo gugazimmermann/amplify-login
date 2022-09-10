@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import { AppContext } from "../context";
 import { LANGUAGES } from "../constants";
 
-const Input = ({ type, placeholder, value, handler, showTooltip }) => {
+const Input = ({ type, placeholder, value, handler, showTooltip, error }) => {
   const { state } = useContext(AppContext);
   const [inputType, setInputType] = useState(type);
   const [tooltip, setTooltip] = useState(false);
@@ -18,7 +18,7 @@ const Input = ({ type, placeholder, value, handler, showTooltip }) => {
         type={inputType}
         value={value}
         onChange={(e) => handler(e.target.value)}
-        className=" block w-full px-4 py-2 font-normal border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:border-indigo-500 focus:outline-none"
+        className={`block w-full px-4 py-2 font-normal border border-solid rounded transition ease-in-out m-0 focus:border-indigo-500 focus:outline-none ${!error ? 'border-gray-300' : 'border-red-500'}`}
         placeholder={placeholder}
       />
       {type === "password" && (

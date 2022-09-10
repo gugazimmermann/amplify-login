@@ -5,6 +5,7 @@ import { AppContext } from "../../context";
 import ProfileEmail from "./ProfileEmail";
 import ProfileChangePassword from "./ProfileChangePassword";
 import ProfileLanguage from "./ProfileLanguage";
+import ProfileAttributes from "./ProfileAttributes";
 
 export default function Profile() {
   const { state } = useContext(AppContext);
@@ -42,10 +43,11 @@ export default function Profile() {
         back={ROUTES[user.locale].HOME}
       />
       {alert?.type && <Alert type={alert?.type} text={alert?.text} /> }
-      <div className="grid sm:grid-cols-3 gap-2">
-        <ProfileEmail  handleErrors={handleErrors} setAlert={setAlert} />
-        <ProfileChangePassword handleErrors={handleErrors} setAlert={setAlert} />
+      <div className="grid sm:grid-cols-2 gap-2">
+        <ProfileAttributes handleErrors={handleErrors} setAlert={setAlert} />
         <ProfileLanguage setAlert={setAlert} />
+        <ProfileChangePassword handleErrors={handleErrors} setAlert={setAlert} />
+        <ProfileEmail handleErrors={handleErrors} setAlert={setAlert} />
       </div>
     </section>
   );
