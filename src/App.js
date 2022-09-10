@@ -12,9 +12,9 @@ const RedefinePassword = lazy(() => import("./pages/auth/RedefinePassword"));
 const SignUp = lazy(() => import("./pages/auth/SignUp"));
 const ConfirmSignUp = lazy(() => import("./pages/auth/ConfirmSignUp"));
 
-const Layout = lazy(() => import("./pages/home/Layout"));
+const Layout = lazy(() => import("./pages/Layout/Layout"));
 const Home = lazy(() => import("./pages/home/Home"));
-const Profile = lazy(() => import("./pages/home/Profile"));
+const Profile = lazy(() => import("./pages/Profile/Profile"));
 
 function App() {
   const [searchParams] = useSearchParams();

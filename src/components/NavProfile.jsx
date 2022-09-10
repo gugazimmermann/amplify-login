@@ -1,9 +1,12 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { LANGUAGES, ROUTES } from "../constants";
+import { AppContext } from "../context";
 import { useCloseModal } from "../helpers";
 
-const NavProfile = ({ user, handleSignOut }) => {
+const NavProfile = ({ handleSignOut }) => {
+  const { state } = useContext(AppContext);
+  const { user } = state;
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const ref = useCloseModal(open, setOpen);

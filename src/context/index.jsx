@@ -2,7 +2,10 @@ import React, { createContext, useReducer } from "react";
 import { STATENAME } from "../constants";
 import AppReducer from "./reducers";
 
-const initial = { lang: "en-US" };
+const initial = { 
+  lang: "en-US",
+  user: null,
+ };
 
 const getState = () =>
   localStorage.getItem(STATENAME)

@@ -69,6 +69,10 @@ const pt_br_lang = {
     CodeAlert: "Por favor, verifique seu email e envie o código.",
     EmailSuccess: "Email alterado com sucesso!",
     PasswordSuccess: "Senha alterada com sucesso!",
+    Name: 'Nome',
+    Birthdate: 'Date Nascimento',
+    ChangeAttributes: 'Atualizar Perfil',
+    AttributesSuccess: 'Perfil atualizado com sucesso!',
   },
 };
 

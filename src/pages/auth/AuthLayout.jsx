@@ -153,18 +153,18 @@ export default function AuthLayout() {
     }
   };
 
-  const loadUser = async () => {
-    setLoading(true);
-    try {
-      await Auth.GetUser();
-      setLoading(false);
-      navigate(ROUTES[state.lang].HOME);
-    } catch (error) {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const loadUser = async () => {
+      setLoading(true);
+      try {
+        await Auth.GetUser();
+        setLoading(false);
+        navigate(ROUTES[state.lang].HOME);
+      } catch (error) {
+        setLoading(false);
+      }
+    };
+    
     loadUser();
   }, []);
 

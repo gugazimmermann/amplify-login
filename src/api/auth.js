@@ -44,22 +44,22 @@ const SignOut = async () => {
 
 const ChangeEmail = async (email) => {
   const user = await AmplifyAuth.currentAuthenticatedUser();
-  await AmplifyAuth.updateUserAttributes(user, { 'email': email });
-}
+  await AmplifyAuth.updateUserAttributes(user, { email: email });
+};
 
 const ConfirmChangeEmail = async (code) => {
-  await AmplifyAuth.verifyCurrentUserAttributeSubmit('email', code);
-}
+  await AmplifyAuth.verifyCurrentUserAttributeSubmit("email", code);
+};
 
 const ChangePassword = async (pwd, newPwd) => {
   const user = await AmplifyAuth.currentAuthenticatedUser();
   await AmplifyAuth.changePassword(user, pwd, newPwd);
-}
+};
 
 const ChangeLanguage = async (language) => {
   const user = await AmplifyAuth.currentAuthenticatedUser();
-  await AmplifyAuth.updateUserAttributes(user, { 'locale': language });
-}
+  await AmplifyAuth.updateUserAttributes(user, { locale: language });
+};
 
 const Auth = {
   SignUp,
@@ -73,7 +73,7 @@ const Auth = {
   ChangeEmail,
   ConfirmChangeEmail,
   ChangePassword,
-  ChangeLanguage
+  ChangeLanguage,
 };
 
 export default Auth;

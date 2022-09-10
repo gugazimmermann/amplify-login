@@ -1,0 +1,7 @@
+type User @model @auth(rules: [{ allow: owner, operations: [create, read, update] }]) {
+  id: ID! @primaryKey
+  locale: String!
+  email: AWSEmail! @index(name: "byEmail", queryField: "userByEmail")
+  name: String
+  birthdate: AWSDate
+}
