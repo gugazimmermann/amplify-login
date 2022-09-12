@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { lazy, Suspense, useContext, useEffect } from "react";
 import { Routes, Route, useSearchParams } from "react-router-dom";
 import { AppContext } from "./context";
