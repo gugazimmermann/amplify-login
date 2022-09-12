@@ -1,0 +1,37 @@
+[
+  {
+    "name": "smile",
+    "description": {
+      "en-US": "Please smile.",
+      "pt-BR": "Por favor, sorria."
+    }
+  },
+  {
+    "name": "lookRight",
+    "description": {
+      "en-US": "Please turn your face to your right.",
+      "pt-BR": "Por favor, gire seu rosto para a direita"
+    }
+  },
+  {
+    "name": "lookLeft",
+    "description": {
+      "en-US": "Please turn your face to your left.",
+      "pt-BR": "Por favor, gire seu rosto para a esquerda"
+    }
+  },
+  {
+    "name": "mouthOpen",
+    "description": {
+      "en-US": "Please open your mouth.",
+      "pt-BR": "Por favor, abra sua boca."
+    }
+  },
+  {
+    "name": "eyesClose",
+    "description": {
+      "en-US": "Please close your eyes.",
+      "pt-BR": "Por favor, feche seus olhos."
+    }
+  }
+]
