@@ -76,6 +76,7 @@ const ProfileAttributes = ({ handleErrors, setAlert }) => {
           text={LANGUAGES[user.locale].Profile.ChangeAttributes}
           disabled={disabledAttributes()}
           handler={() => handleAttributes()}
+          full
         />
       </div>
     </Form>

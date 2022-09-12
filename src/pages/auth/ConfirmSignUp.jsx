@@ -57,6 +57,7 @@ export default function ConfirmSignUp() {
         text={LANGUAGES[state.lang].Auth.ConfirmRegistrationButton}
         disabled={disabled()}
         handler={() => confirmSignUp(email, code)}
+        full
       />
       <div className="w-full text-center mt-6">
         <AuthLink

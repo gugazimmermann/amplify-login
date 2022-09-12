@@ -33,6 +33,7 @@ export default function ForgorPassword() {
         text={LANGUAGES[state.lang].Auth.SendCode}
         disabled={disabled()}
         handler={() => sendForgotPasswordCode(email)}
+        full
       />
       <div className="w-full text-center mt-6">
         <AuthLink

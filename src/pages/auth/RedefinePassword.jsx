@@ -78,6 +78,7 @@ export default function RedefinePassword() {
         text={LANGUAGES[state.lang].Auth.RedefinePasswordButton}
         disabled={disabled()}
         handler={() => redefinePassword(email, code, pwd, repeat)}
+        full
       />
       <div className="w-full text-center mt-6">
         <AuthLink

@@ -57,6 +57,7 @@ export default function SignUp() {
         text={LANGUAGES[state.lang].Auth.SignUpButton}
         disabled={disabled()}
         handler={() => signUp(email, pwd, repeat)}
+        full
       />
       <div className="w-full text-center mt-6">
         <AuthLink
