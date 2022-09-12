@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState, useContext, useCallback } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { AppContext } from "../../context";
@@ -47,10 +48,10 @@ export default function Layout() {
   if (!state.user) return <Loading />;
 
   return (
-    <main className="mx-auto h-screen">
+    <main className="mx-auto max-w-screen-lg h-screen">
       {loading && <Loading />}
       <Nav handleSignOut={handleSignOut} />
-      <div className="mx-auto max-w-screen-lg p-4">
+      <div className="h-full -mt-12 pt-12">
         <Outlet context={{ loadUser, setLoading }} />
       </div>
     </main>

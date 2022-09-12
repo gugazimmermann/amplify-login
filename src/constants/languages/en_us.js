@@ -18,6 +18,9 @@ const en_us_lang = {
     Sorry: "Sorry",
     PageNotFound: "Page Not Found",
   },
+  Home: {
+    CompleteProfile: "Please, complete the Profile!"
+  },
   CommonError: {
     Login: "Sorry, Unable to login",
     SendCode: "Unable to send code, email is correct?",
@@ -72,6 +75,29 @@ const en_us_lang = {
     ChangeAttributes: 'Update Profile',
     AttributesSuccess: 'Profile Updated successfully!',
   },
+  KYC: {
+    Welcome: {
+      Button: "Welcome",
+      Title: "Welcome to Video KYC",
+      SubTitle: "The Video KYC (Know your Customer) process consists of 3 simple steps:",
+      DescriptionOne: "Liveliness Detection - The user will do a series of random face gestures to determine whether its a live feed.",
+      DescriptionTwo: "Documents Validation - upload valid ID documents to use for verification.</li>",
+      DescriptionThree: "Summary - The final result of the validation.",
+      Start: "Start"
+    },
+    Liveliness: {
+      Button: "Liveliness",
+      Title: "Bem vindo ao Video KYC",
+    },
+    Documents: {
+      Button: "Documents",
+      Title: "Documents",
+    },
+    Summary: {
+      Button: "Summary",
+      Title: "Summary",
+    }
+  }
 };
 
 export default en_us_lang;

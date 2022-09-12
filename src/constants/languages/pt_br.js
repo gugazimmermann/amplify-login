@@ -18,6 +18,9 @@ const pt_br_lang = {
     Sorry: "Desculpe",
     PageNotFound: "Página Não Encontrada",
   },
+  Home: {
+    CompleteProfile: "Por favor, complete seu Perfil!"
+  },
   CommonError: {
     Login: "Desculpe, Não foi possível entrar",
     SendCode: "Não foi possível enviar o código, o email está correto?",
@@ -74,6 +77,30 @@ const pt_br_lang = {
     ChangeAttributes: 'Atualizar Perfil',
     AttributesSuccess: 'Perfil atualizado com sucesso!',
   },
+  KYC: {
+    Welcome: {
+      Button: "Início",
+      Title: "Bem vindo ao Video KYC",
+      SubTitle: "O Video KYC (Know your Customer / Conheça seu Cliente) consiste em 3 etapas simples:",
+      DescriptionOne: "Detecção de Vivacidade - O usuário fará uma série aleatória de gestos faciais para determinar se é uma transmissão ao vivo.",
+      DescriptionTwo: "Validação de documentos - Identificação de documentos válidos para serem usados na verificação.",
+      DescriptionThree: "Resumo - O resultado final da validação.",
+      Start: "Começar"
+    },
+    Liveliness: {
+      Button: "Vivacidade ",
+      Title: "Detecção de Vivacidade",
+      SubTitle: "Você será solicitado a fazer uma série de gestos aleatórios que nos permitirão detectar se é uma transmissão ao vivo.",
+    },
+    Documents: {
+      Button: "Documentos",
+      Title: "Validação de documentos",
+    },
+    Summary: {
+      Button: "Resumo",
+      Title: "Resumo",
+    }
+  }
 };
 
 export default pt_br_lang;
