@@ -222,11 +222,18 @@ export default function LivelinessCheck({ handleSetTab }) {
           {showProgress && progressValue < 100 && (
             <>
               <ProgressBar value={progressValue} />
-              <Button text="Validate" handler={() => requestGesture()} />
+              <Button
+                text={LANGUAGES[state.user.locale].KYC.Liveliness.Validate}
+                handler={() => requestGesture()}
+                full
+              />
             </>
           )}
           {progressValue === 100 && (
-            <Button text="Continue" handler={() => handleSetTab(2, 3)} />
+            <Button
+              text={LANGUAGES[state.user.locale].KYC.Liveliness.Continue}
+              handler={() => handleSetTab(2, 3)}
+            />
           )}
         </div>
       </div>
