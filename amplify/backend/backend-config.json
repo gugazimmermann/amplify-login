@@ -88,6 +88,17 @@
       "service": "Rekognition",
       "dependsOn": [],
       "identifyType": "identifyEntities"
+    },
+    "textID": {
+      "providerPlugin": "awscloudformation",
+      "service": "RekognitionAndTextract",
+      "dependsOn": [],
+      "identifyType": "identifyText"
+    },
+    "textInterpret": {
+      "providerPlugin": "awscloudformation",
+      "service": "Comprehend",
+      "interpretType": "interpretText"
     }
   }
 }
