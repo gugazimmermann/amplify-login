@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Title } from "../../components";
+import { Button, Title } from "../../components";
 import { LANGUAGES } from "../../constants";
 import { AppContext } from "../../context";
 
@@ -20,12 +20,11 @@ export default function Welcome({handleSetTab}) {
         <li className="mt-4">{LANGUAGES[state.user.locale].KYC.Welcome.DescriptionThree}</li>
       </ul>
       <div className="w-full flex justify-center mt-8">
-        <button
-          className="border border-indigo-800 bg-indigo-500 text-white px-4 py-1.5 rounded-md shadow-md"
-          onClick={() => handleSetTab(1, 2)}
+        <Button
+          text={LANGUAGES[state.user.locale].KYC.Welcome.Start}
+          handler={() => handleSetTab(1, 2)}
         >
-          {LANGUAGES[state.user.locale].KYC.Welcome.Start}
-        </button>
+        </Button>
       </div>
     </>
   );
