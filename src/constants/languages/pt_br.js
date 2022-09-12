@@ -91,6 +91,11 @@ const pt_br_lang = {
       Button: "Vivacidade ",
       Title: "Detecção de Vivacidade",
       SubTitle: "Você será solicitado a fazer uma série de gestos aleatórios que nos permitirão detectar se é uma transmissão ao vivo.",
+      ThankYou: "Obrigado",
+      FailedValidate: "Falha para validar. Tente Novamente!",
+      NoFace: "Não foi possível reconhecer um rosto. Tente Novamente.",
+      MoreThanOneFace: "Mais de um rosto detectado. Tente Novamente.",
+      Unkown: "Gestão não reconhecido."
     },
     Documents: {
       Button: "Documentos",

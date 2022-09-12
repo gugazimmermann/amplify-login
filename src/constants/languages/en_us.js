@@ -87,7 +87,13 @@ const en_us_lang = {
     },
     Liveliness: {
       Button: "Liveliness",
-      Title: "Bem vindo ao Video KYC",
+      Title: "Welcome to Video KYC",
+      SubTitle: "You will be asked to make a series of random gestures that will allow us to detect if it is a live stream.",
+      ThankYou: "Thank You",
+      FailedValidate: "Failed to validate. Try again!",
+      NoFace: "Could not recognize a face. Try again.",
+      MoreThanOneFace:  "More than one face. Try again.",
+      Unkown: "Unkown gesture type specified",
     },
     Documents: {
       Button: "Documents",
