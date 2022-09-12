@@ -81,5 +81,13 @@
         }
       }
     }
+  },
+  "predictions": {
+    "faceID": {
+      "providerPlugin": "awscloudformation",
+      "service": "Rekognition",
+      "dependsOn": [],
+      "identifyType": "identifyEntities"
+    }
   }
 }
