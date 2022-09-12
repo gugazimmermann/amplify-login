@@ -61,6 +61,11 @@ const ChangeLanguage = async (language) => {
   await AmplifyAuth.updateUserAttributes(user, { locale: language });
 };
 
+const GetCredentials = async () => {
+  const credentials = await AmplifyAuth.currentCredentials();
+  return credentials;
+}
+
 const Auth = {
   SignUp,
   ResendConfirmationCode,
@@ -74,6 +79,7 @@ const Auth = {
   ConfirmChangeEmail,
   ChangePassword,
   ChangeLanguage,
+  GetCredentials
 };
 
 export default Auth;
