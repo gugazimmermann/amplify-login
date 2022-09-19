@@ -1,13 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect, useRef, useContext, useCallback } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import Webcam from "react-webcam";
 import { Buffer } from "buffer";
-import {
-  RekognitionClient,
-  DetectFacesCommand,
-} from "@aws-sdk/client-rekognition";
-import awsConfig from "../../aws-exports";
-import Auth from "../../api/auth";
+import { DetectFacesCommand } from "@aws-sdk/client-rekognition";
 import { Title, Button, ProgressBar, Spinner } from "../../components";
 import { AppContext } from "../../context";
 import { LANGUAGES } from "../../constants";
@@ -24,10 +19,9 @@ const screenShotProps = {
   height: 450,
 };
 
-export default function LivelinessCheck({ handleSetTab }) {
+export default function LivelinessCheck({ rekognition, handleSetTab, handleSetImage }) {
   const { state } = useContext(AppContext);
   const webcamRef = useRef(null);
-  const [rekognitionClient, setRekognitionClient] = useState();
   const [gestures, setGestures] = useState(null);
   const [gesture, setGesture] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -39,19 +33,12 @@ export default function LivelinessCheck({ handleSetTab }) {
   const [showWebcam, setShowWebcam] = useState(false);
   const [progressValue, setProgressValue] = useState(0);
 
-  const configRekognition = useCallback(async () => {
-    const authCredentials = await Auth.GetCredentials();
-    const client = new RekognitionClient({
-      region: awsConfig.aws_cognito_region,
-      credentials: authCredentials,
-    });
-    setRekognitionClient(client);
-  }, []);
-
   useEffect(() => {
-    configRekognition();
+    const g = [];
+    g.push(gesturesJson[0]);
+    gesturesJson.shift();
     gesturesJson.sort(() => Math.random() - 0.5);
-    setGestures(gesturesJson.slice(0, 3));
+    setGestures(g.concat(gesturesJson.slice(0, 2)));
   }, []);
 
   useEffect(() => {
@@ -157,7 +144,7 @@ export default function LivelinessCheck({ handleSetTab }) {
       imgBase64Strg.split(";base64,").pop(),
       "base64"
     );
-    const detectFaces = await rekognitionClient.send(
+    const detectFaces = await rekognition.send(
       new DetectFacesCommand({
         Attributes: ["ALL"],
         Image: { Bytes: buffer },
@@ -169,10 +156,8 @@ export default function LivelinessCheck({ handleSetTab }) {
     } else {
       let res = validateGesture(gesture, detectFaces);
       if (res.result) {
+        if (gesture === 'smile' && handleSetImage) handleSetImage(imgBase64Strg)
         setErrorMessage();
-        // get the bounding box
-        // let imageBounds = detectFaces.FaceDetails[0].BoundingBox;
-        // crop the face and store the image
         setAlertMessage(res.message);
         setLoading(false);
         updateGestureState();

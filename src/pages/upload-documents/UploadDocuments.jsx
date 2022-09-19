@@ -1,17 +1,8 @@
-import { useState, useEffect, useRef, useContext } from "react";
+import { useState, useRef, useContext } from "react";
 import Webcam from "react-webcam";
 import { Buffer } from "buffer";
-import {
-  RekognitionClient,
-  DetectFacesCommand,
-  DetectTextCommand,
-} from "@aws-sdk/client-rekognition";
-import {
-  ComprehendClient,
-  DetectEntitiesCommand,
-} from "@aws-sdk/client-comprehend";
-import awsConfig from "../../aws-exports";
-import Auth from "../../api/auth";
+import { DetectFacesCommand, DetectTextCommand } from "@aws-sdk/client-rekognition";
+import { DetectEntitiesCommand } from "@aws-sdk/client-comprehend";
 import { Title, Button, Spinner, ProgressBar } from "../../components";
 import { AppContext } from "../../context";
 import { LANGUAGES } from "../../constants";
@@ -30,11 +21,9 @@ const screenShotProps = {
   height: 450,
 };
 
-export default function UploadDocuments({ handleSetTab }) {
+export default function UploadDocuments({ rekognition, comprehend, handleSetTab, handleUserData, handleSetImage }) {
   const { state } = useContext(AppContext);
   const webcamRef = useRef(null);
-  const [rekognitionClient, setRekognitionClient] = useState();
-  const [comprehendClient, setComprehendClient] = useState();
   const [alertMessage, setAlertMessage] = useState(
     LANGUAGES[state.user.locale].KYC.Documents.SubTitle
   );
@@ -48,29 +37,6 @@ export default function UploadDocuments({ handleSetTab }) {
     LANGUAGES[state.user.locale].KYC.Documents.FileName
   );
   const [completed, setCompleted] = useState(false);
-  const [documentType, setDocumentType] = useState(null);
-  const [gender, setGender] = useState(null);
-  const [ageRange, setAgeRange] = useState(null);
-  const [birthdate, setBirthdate] = useState(null);
-  const [username, setUsername] = useState(null);
-
-  const configClients = async () => {
-    const authCredentials = await Auth.GetCredentials();
-    const rekClient = new RekognitionClient({
-      region: awsConfig.aws_cognito_region,
-      credentials: authCredentials,
-    });
-    setRekognitionClient(rekClient);
-    const compClient = new ComprehendClient({
-      region: awsConfig.aws_cognito_region,
-      credentials: authCredentials,
-    });
-    setComprehendClient(compClient);
-  };
-
-  useEffect(() => {
-    configClients();
-  }, []);
 
   const handleDocumentType = (words) => {
     let docType = null;
@@ -118,7 +84,7 @@ export default function UploadDocuments({ handleSetTab }) {
     let resDocType = null;
     let resName = null;
     let resDoB = null;
-    const txtResponse = await rekognitionClient.send(
+    const txtResponse = await rekognition.send(
       new DetectTextCommand({
         Image: { Bytes: image },
         Filters: { WordFilter: { MinConfidence: 80 } },
@@ -137,7 +103,7 @@ export default function UploadDocuments({ handleSetTab }) {
       );
       const detectedMap = detected.map((item) => item.DetectedText);
       resDocType = handleDocumentType(detectedMap);
-      let entitiesResponse = await comprehendClient.send(
+      let entitiesResponse = await comprehend.send(
         new DetectEntitiesCommand({
           Text: detectedMap.join(" "),
           LanguageCode: state.user.locale === "en-US" ? "en" : "pt",
@@ -158,11 +124,9 @@ export default function UploadDocuments({ handleSetTab }) {
         entitiesResponse.Entities.reverse();
         let entities = entitiesResponse.Entities.filter((e) => e.Score > 0.6);
         let personEntity = entities.filter((e) => e.Type === "PERSON");
-        if (!personEntity) setUsername(null);
-        else resName = handleName(personEntity);
+        resName = handleName(personEntity);
         let dobEntity = entities.filter((e) => e.Type === "DATE");
-        if (!dobEntity | !dobEntity.length) setBirthdate(null);
-        else resDoB = findBirthDate(dobEntity);
+        resDoB = findBirthDate(dobEntity);
       }
     }
     return { docType: resDocType, name: resName, dob: resDoB };
@@ -171,7 +135,7 @@ export default function UploadDocuments({ handleSetTab }) {
   const captureFaceDetails = async (imageBuffer) => {
     let age = null;
     let sex = null;
-    const faceDetectResponse = await rekognitionClient.send(
+    const faceDetectResponse = await rekognition.send(
       new DetectFacesCommand({
         Attributes: ["ALL"],
         Image: { Bytes: imageBuffer },
@@ -190,24 +154,24 @@ export default function UploadDocuments({ handleSetTab }) {
     } else {
       age = faceDetectResponse.FaceDetails[0].AgeRange;
       sex = faceDetectResponse.FaceDetails[0].Gender.Value;
-      // get the bounding box
-      // let imageBounds = faceDetectResponse.FaceDetails[0].BoundingBox;
-      // crop the face and store the image
     }
     return { age, sex };
   };
 
   const handleProcess = async (imgBase64Strg) => {
+    handleSetImage(imgBase64Strg)
     const base64Img = imgBase64Strg.split(";base64,").pop();
     const binaryImg = new Buffer.from(base64Img, "base64");
     setProgressValue(25);
     const { docType, name, dob } = await captureTextDetails(binaryImg);
     const { age, sex } = await captureFaceDetails(binaryImg);
-    setDocumentType(docType);
-    setUsername(name);
-    setBirthdate(dob);
-    setAgeRange(age);
-    setGender(sex);
+    handleUserData({
+      documentType: docType,
+      username: name,
+      birthdate: dob,
+      ageRange: age,
+      gender: sex,
+    })
     setProgressValue(100);
     setLoading(false);
     if (name && dob) {
