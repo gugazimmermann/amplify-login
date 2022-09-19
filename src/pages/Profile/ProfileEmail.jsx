@@ -64,6 +64,7 @@ const ProfileEmail = ({handleErrors, setAlert}) => {
         text={LANGUAGES[user.locale].Profile.ChangeEmail}
         disabled={disabledEmail()}
         handler={() => handleChangeEmail()}
+        full
       />
     </>
   );
@@ -80,6 +81,7 @@ const ProfileEmail = ({handleErrors, setAlert}) => {
         text="Send Code"
         disabled={disabledCode()}
         handler={() => handleVerifyCode()}
+        full
       />
     </>
   );

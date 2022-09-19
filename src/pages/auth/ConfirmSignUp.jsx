@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState, useContext } from "react";
 import { useOutletContext, useLocation, useSearchParams } from "react-router-dom";
 import { AppContext } from "../../context";
@@ -18,7 +19,7 @@ export default function ConfirmSignUp() {
   useEffect(() => {
 		if (searchParams.get('email')) setEmail(searchParams.get('email'));
 		if (searchParams.get('code')) setCode(searchParams.get('code'));
-	}, []);
+	}, [searchParams]);
 
   useEffect(() => {
     setImg(ConfirmSignUpImage);
@@ -56,6 +57,7 @@ export default function ConfirmSignUp() {
         text={LANGUAGES[state.lang].Auth.ConfirmRegistrationButton}
         disabled={disabled()}
         handler={() => confirmSignUp(email, code)}
+        full
       />
       <div className="w-full text-center mt-6">
         <AuthLink

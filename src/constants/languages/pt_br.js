@@ -18,6 +18,9 @@ const pt_br_lang = {
     Sorry: "Desculpe",
     PageNotFound: "Página Não Encontrada",
   },
+  Home: {
+    CompleteProfile: "Por favor, complete seu Perfil!"
+  },
   CommonError: {
     Login: "Desculpe, Não foi possível entrar",
     SendCode: "Não foi possível enviar o código, o email está correto?",
@@ -74,6 +77,52 @@ const pt_br_lang = {
     ChangeAttributes: 'Atualizar Perfil',
     AttributesSuccess: 'Perfil atualizado com sucesso!',
   },
+  KYC: {
+    Welcome: {
+      Button: "Início",
+      Title: "Bem vindo ao Video KYC",
+      SubTitle: "O Video KYC (Know your Customer / Conheça seu Cliente) consiste em 3 etapas simples:",
+      DescriptionOne: "Detecção de Vivacidade - O usuário fará uma série aleatória de gestos faciais para determinar se é uma transmissão ao vivo.",
+      DescriptionTwo: "Validação de documentos - Identificação de documentos válidos para serem usados na verificação.",
+      DescriptionThree: "Resumo - O resultado final da validação.",
+      Start: "Começar"
+    },
+    Liveliness: {
+      Button: "Vivacidade ",
+      Title: "Detecção de Vivacidade",
+      SubTitle: "Você será solicitado a fazer uma série de gestos aleatórios que nos permitirão detectar se é uma transmissão ao vivo.",
+      ThankYou: "Obrigado",
+      FailedValidate: "Falha para validar. Tente Novamente!",
+      NoFace: "Não foi possível reconhecer um rosto. Tente Novamente.",
+      MoreThanOneFace: "Mais de um rosto detectado. Tente Novamente.",
+      Unkown: "Gestão não reconhecido.",
+      Validate: "Validar",
+      Continue: "Continuar",
+    },
+    Documents: {
+      Button: "Documentos",
+      Title: "Validação de documentos",
+      SubTitle: "Utilizar Câmera ou fazer Upload?",
+      Camera: "Câmera",
+      Upload: "Upload",
+      ShowDocument: "Mostre um documento com foto.",
+      UploadDocument: "Envie um documento com foto.",
+      FileName: "Selecione",
+      DocTypePassport: "Passaport",
+      DocTypeDriver: "Carteira de Motorista",
+      NoFace: "Não foi possível reconhecer um rosto. Tente Novamente.",
+      NoText: "Não foi possível reconhecer texto. Tente Novamente.",
+      NoEntities: "Não foi possível reconhecer entidades. Tente Novamente.",
+      Validate: "Validar",
+      Continue: "Continuar",
+      Success: "Documento processado com sucesso!",
+      Fail: "Não foi possivel validar o Nome e / ou Data de Nascimento, tente novamente",
+    },
+    Summary: {
+      Button: "Resumo",
+      Title: "Resumo",
+    }
+  }
 };
 
 export default pt_br_lang;

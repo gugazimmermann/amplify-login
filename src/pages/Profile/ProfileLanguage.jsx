@@ -51,6 +51,7 @@ const ProfileLanguage = ({ setAlert }) => {
           text={LANGUAGES[user.locale].Profile.ChangeLanguage}
           disabled={disabledLanguage()}
           handler={() => handleChangeLanguage()}
+          full
         />
       </div>
     </Form>

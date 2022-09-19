@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState, useContext } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { AppContext } from "../../context";
@@ -166,7 +167,7 @@ export default function AuthLayout() {
     };
     
     loadUser();
-  }, []);
+  }, [navigate, state.lang]);
 
   return (
     <main className="h-screen mx-auto bg-white">

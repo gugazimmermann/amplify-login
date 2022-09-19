@@ -35,5 +35,20 @@ export type AmplifyDependentResourcesAttributes = {
             "GraphQLAPIIdOutput": "string",
             "GraphQLAPIEndpointOutput": "string"
         }
+    },
+    "predictions": {
+        "faceID": {
+            "region": "string",
+            "celebrityDetectionEnabled": "string",
+            "maxEntities": "string"
+        },
+        "textID": {
+            "region": "string",
+            "format": "string"
+        },
+        "textInterpret": {
+            "region": "string",
+            "type": "string"
+        }
     }
 }

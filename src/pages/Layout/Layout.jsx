@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState, useContext, useCallback } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { AppContext } from "../../context";
@@ -19,7 +20,7 @@ export default function Layout() {
       dispatch({ type: TYPES.UPDATE_LANG, payload: locale || user.locale });
       dispatch({ type: TYPES.UPDATE_USER, payload: user });
     }
-  }, []);
+  }, [dispatch, state.user]);
 
   const handleSignOut = async () => {
     await Auth.SignOut();
@@ -42,15 +43,15 @@ export default function Layout() {
     };
 
     isUserLoggedIn();
-  }, []);
+  }, [loadUser, navigate, state.lang]);
 
   if (!state.user) return <Loading />;
 
   return (
-    <main className="mx-auto h-screen">
+    <main className="mx-auto max-w-screen-lg h-screen">
       {loading && <Loading />}
       <Nav handleSignOut={handleSignOut} />
-      <div className="mx-auto max-w-screen-lg p-4">
+      <div className="h-full -mt-12 pt-12">
         <Outlet context={{ loadUser, setLoading }} />
       </div>
     </main>

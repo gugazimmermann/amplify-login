@@ -57,6 +57,7 @@ export default function SignIn() {
         text={LANGUAGES[state.lang].Auth.SignInButton}
         disabled={disabled()}
         handler={() => signIn(email, pwd, remember)}
+        full
       />
       <div className="w-full text-center mt-6">
         <AuthLink

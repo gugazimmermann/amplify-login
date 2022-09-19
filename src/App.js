@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { lazy, Suspense, useContext, useEffect } from "react";
 import { Routes, Route, useSearchParams } from "react-router-dom";
 import { AppContext } from "./context";
@@ -23,7 +24,7 @@ function App() {
   useEffect(() => {
     if (searchParams.get("lang"))
       dispatch({ type: TYPES.UPDATE_LANG, payload: searchParams.get("lang") });
-  }, []);
+  }, [dispatch, searchParams]);
 
   return (
     <Suspense fallback={<Loading />}>

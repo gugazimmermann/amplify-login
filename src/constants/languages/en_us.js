@@ -18,6 +18,9 @@ const en_us_lang = {
     Sorry: "Sorry",
     PageNotFound: "Page Not Found",
   },
+  Home: {
+    CompleteProfile: "Please, complete the Profile!"
+  },
   CommonError: {
     Login: "Sorry, Unable to login",
     SendCode: "Unable to send code, email is correct?",
@@ -72,6 +75,52 @@ const en_us_lang = {
     ChangeAttributes: 'Update Profile',
     AttributesSuccess: 'Profile Updated successfully!',
   },
+  KYC: {
+    Welcome: {
+      Button: "Welcome",
+      Title: "Welcome to Video KYC",
+      SubTitle: "The Video KYC (Know your Customer) process consists of 3 simple steps:",
+      DescriptionOne: "Liveliness Detection - The user will do a series of random face gestures to determine whether its a live feed.",
+      DescriptionTwo: "Documents Validation - upload valid ID documents to use for verification.</li>",
+      DescriptionThree: "Summary - The final result of the validation.",
+      Start: "Start"
+    },
+    Liveliness: {
+      Button: "Liveliness",
+      Title: "Welcome to Video KYC",
+      SubTitle: "You will be asked to make a series of random gestures that will allow us to detect if it is a live stream.",
+      ThankYou: "Thank You",
+      FailedValidate: "Failed to validate. Try again!",
+      NoFace: "Could not recognize a face. Try again.",
+      MoreThanOneFace:  "More than one face. Try again.",
+      Unkown: "Unkown gesture type specified",
+      Validate: "Validate",
+      Continue: "Continue",
+    },
+    Documents: {
+      Button: "Documents",
+      Title: "Document Validation",
+      SubTitle: "Use Camera or Upload?",
+      Camera: "Camera",
+      Upload: "Upload",
+      ShowDocument: "Show a photo ID.",
+      UploadDocument: "Submit a photo ID.",
+      FileName: "Select",
+      DocTypePassport: "Passport",
+      DocTypeDriver: "Driver's license",
+      NoFace: "Could not recognize a face. Try again.",
+      NoText: "Could not recognize text. Try again.",
+      NoEntities: "Unable to recognize entities. Try again.",
+      Validate: "Validate",
+      Continue: "Continue",
+      Success: "Document processed successfully!",
+      Fail: "Unable to validate Name and/or Date of Birth, please try again",
+    },
+    Summary: {
+      Button: "Summary",
+      Title: "Summary",
+    }
+  }
 };
 
 export default en_us_lang;

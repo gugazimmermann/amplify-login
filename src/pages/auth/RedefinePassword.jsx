@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState, useContext } from "react";
 import { useOutletContext, useLocation, useSearchParams } from "react-router-dom";
 import { AppContext } from "../../context";
@@ -20,7 +21,7 @@ export default function RedefinePassword() {
   useEffect(() => {
 		if (searchParams.get('email')) setEmail(searchParams.get('email'));
 		if (searchParams.get('code')) setCode(searchParams.get('code'));
-	}, []);
+	}, [searchParams]);
 
   
   useEffect(() => {
@@ -77,6 +78,7 @@ export default function RedefinePassword() {
         text={LANGUAGES[state.lang].Auth.RedefinePasswordButton}
         disabled={disabled()}
         handler={() => redefinePassword(email, code, pwd, repeat)}
+        full
       />
       <div className="w-full text-center mt-6">
         <AuthLink

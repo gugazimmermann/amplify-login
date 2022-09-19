@@ -8,6 +8,8 @@ export { default as Input } from "./Input";
 export { default as Loading } from "./Loading";
 export { default as Nav } from "./Nav";
 export { default as NavProfile } from "./NavProfile";
+export { default as ProgressBar } from "./ProgressBar";
 export { default as RememberMe } from "./RememberMe";
 export { default as Select } from "./Select";
+export { default as Spinner } from "./Spinner";
 export { default as Title } from "./Title";

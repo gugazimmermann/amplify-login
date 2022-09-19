@@ -63,6 +63,7 @@ const ProfileChangePassword = ({handleErrors, setAlert}) => {
           text={LANGUAGES[user.locale].Profile.ChangePassword}
           disabled={disabledPassword()}
           handler={() => handlePassword()}
+          full
         />
       </div>
     </Form>

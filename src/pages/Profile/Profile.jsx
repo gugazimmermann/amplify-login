@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useContext, useState } from "react";
 import { LANGUAGES, ROUTES } from "../../constants";
 import { Alert, Title } from "../../components";
@@ -34,10 +35,10 @@ export default function Profile() {
         errorMessage = message;
     }
     setAlert({ type: "error", text: errorMessage });
-  }, []);
+  }, [user.locale]);
 
   return (
-    <section>
+    <section className="p-4">
       <Title
         text={LANGUAGES[user.locale].Profile.Profile}
         back={ROUTES[user.locale].HOME}

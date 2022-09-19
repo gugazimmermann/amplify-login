@@ -17,7 +17,7 @@ const ProfileAttributes = ({ handleErrors, setAlert }) => {
   useEffect(() => {
     if (user) {
       setName(user?.name || "");
-      setBithdate(FormatDate.Show(user?.birthdate, user.locale) || "");
+      setBithdate(user?.birthdate ? FormatDate.Show(user?.birthdate, user.locale) : "");
     }
   }, [user]);
 
@@ -31,7 +31,7 @@ const ProfileAttributes = ({ handleErrors, setAlert }) => {
     try {
       const birthdateFormated =
         user.locale === "pt-BR"
-          ? moment(birthdate, "DD/MM/YYYY").format("YYYY-DD-MM")
+          ? moment(birthdate, "DD/MM/YYYY").format("YYYY-MM-DD")
           : moment(birthdate, "YYYY-MM-DD").format("YYYY-MM-DD");
       await Mudations.UpdateUser({
         id: user.id,
@@ -76,6 +76,7 @@ const ProfileAttributes = ({ handleErrors, setAlert }) => {
           text={LANGUAGES[user.locale].Profile.ChangeAttributes}
           disabled={disabledAttributes()}
           handler={() => handleAttributes()}
+          full
         />
       </div>
     </Form>
