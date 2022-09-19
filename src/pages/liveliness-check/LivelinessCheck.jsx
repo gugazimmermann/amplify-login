@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useRef, useContext } from "react";
 import Webcam from "react-webcam";
 import { Buffer } from "buffer";
@@ -48,7 +47,7 @@ export default function LivelinessCheck({ rekognition, handleSetTab, handleSetIm
       ];
       setAlertMessage(description);
     }
-  }, [gesture]);
+  }, [gesture, gestures, state.user.locale]);
 
   const updateGestureState = () => {
     const g = gestures.map((x) => x);
