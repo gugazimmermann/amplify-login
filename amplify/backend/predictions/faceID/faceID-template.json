@@ -142,7 +142,8 @@
               "Action": [
                 "rekognition:DetectFaces",
                 "rekognition:RecognizeCelebrities",
-                "rekognition:DetectLabels"
+                "rekognition:DetectLabels",
+                "rekognition:CompareFaces"
               ],
               "Resource": "*"
             }
