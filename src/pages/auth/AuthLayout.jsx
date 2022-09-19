@@ -167,7 +167,7 @@ export default function AuthLayout() {
     };
     
     loadUser();
-  }, []);
+  }, [navigate, state.lang]);
 
   return (
     <main className="h-screen mx-auto bg-white">

@@ -35,7 +35,7 @@ export default function Profile() {
         errorMessage = message;
     }
     setAlert({ type: "error", text: errorMessage });
-  }, []);
+  }, [user.locale]);
 
   return (
     <section className="p-4">

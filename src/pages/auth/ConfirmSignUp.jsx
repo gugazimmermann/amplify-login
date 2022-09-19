@@ -19,7 +19,7 @@ export default function ConfirmSignUp() {
   useEffect(() => {
 		if (searchParams.get('email')) setEmail(searchParams.get('email'));
 		if (searchParams.get('code')) setCode(searchParams.get('code'));
-	}, []);
+	}, [searchParams]);
 
   useEffect(() => {
     setImg(ConfirmSignUpImage);

@@ -24,7 +24,7 @@ function App() {
   useEffect(() => {
     if (searchParams.get("lang"))
       dispatch({ type: TYPES.UPDATE_LANG, payload: searchParams.get("lang") });
-  }, []);
+  }, [dispatch, searchParams]);
 
   return (
     <Suspense fallback={<Loading />}>

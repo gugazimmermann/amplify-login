@@ -20,7 +20,7 @@ export default function Layout() {
       dispatch({ type: TYPES.UPDATE_LANG, payload: locale || user.locale });
       dispatch({ type: TYPES.UPDATE_USER, payload: user });
     }
-  }, []);
+  }, [dispatch, state.user]);
 
   const handleSignOut = async () => {
     await Auth.SignOut();
@@ -43,7 +43,7 @@ export default function Layout() {
     };
 
     isUserLoggedIn();
-  }, []);
+  }, [loadUser, navigate, state.lang]);
 
   if (!state.user) return <Loading />;
 

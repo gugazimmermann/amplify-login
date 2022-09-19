@@ -21,7 +21,7 @@ export default function RedefinePassword() {
   useEffect(() => {
 		if (searchParams.get('email')) setEmail(searchParams.get('email'));
 		if (searchParams.get('code')) setCode(searchParams.get('code'));
-	}, []);
+	}, [searchParams]);
 
   
   useEffect(() => {
