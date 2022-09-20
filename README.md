@@ -1,4 +1,4 @@
-# Complete Login Flow using React, AWS Amplify (Auth with Cognito / GraphQL with DynamoDB / Hosting with S3 and CloudFront) / Liveliness Check, Document Check and Face Compatizon using AWS Amplify Predictions (with Rekognition and Comprehend)
+# Complete Login Flow using React, AWS Amplify (Auth with Cognito / GraphQL with DynamoDB / Hosting with S3 and CloudFront) / Liveliness Check, Document Check and Face Comparison using AWS Amplify Predictions (with Rekognition and Comprehend)
 
 ![amplify](./readme-images/amplify3.png)
 
@@ -29,6 +29,8 @@ or here: <https://medium.com/@gugazimmermann/part-3-complete-login-flow-using-re
 Code: <https://github.com/gugazimmermann/amplify-login/tree/part-3>
 
 ## KYC - Know Your Customer
+
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/F0YuYd9pUs4/0.jpg)](http://www.youtube.com/watch?v=F0YuYd9pUs4)
 
 Code: <https://github.com/gugazimmermann/amplify-login/tree/v1.9>
 
