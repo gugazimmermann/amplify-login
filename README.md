@@ -1,4 +1,4 @@
-# Complete Login Flow using React, AWS Amplify (Auth with Cognito / GraphQL with DynamoDB / Hosting with S3 and CloudFront) / Liveliness Check, Document Check and Face Compatizon using AWS Amplify Predictions (with Rekognition and Comprehend)
+# Complete Login Flow using React, AWS Amplify (Auth with Cognito / GraphQL with DynamoDB / Hosting with S3 and CloudFront) / Liveliness Check, Document Check and Face Comparison using AWS Amplify Predictions (with Rekognition and Comprehend)
 
 ![amplify](./readme-images/amplify3.png)
 
