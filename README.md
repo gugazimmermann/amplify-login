@@ -30,6 +30,8 @@ Code: <https://github.com/gugazimmermann/amplify-login/tree/part-3>
 
 ## KYC - Know Your Customer
 
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/F0YuYd9pUs4/0.jpg)](http://www.youtube.com/watch?v=F0YuYd9pUs4)
+
 Code: <https://github.com/gugazimmermann/amplify-login/tree/v1.9>
 
 Until now we have create a React App with a full login system, multi language capability, and are able to change the user Profile.
